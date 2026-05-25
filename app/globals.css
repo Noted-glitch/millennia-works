@@ -1,26 +1,38 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --color-pearl: #FAFAF7;
+  --color-gold: #D4AF37;
+  --color-navy: #1A1A2E;
+  --color-taupe: #8B7355;
+  --color-champagne: #E8E0D0;
+  --color-graphite: #2C2C2C;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-pearl: var(--color-pearl);
+  --color-gold: var(--color-gold);
+  --color-navy: var(--color-navy);
+  --color-taupe: var(--color-taupe);
+  --color-champagne: var(--color-champagne);
+  --color-graphite: var(--color-graphite);
+  --font-playfair: var(--font-playfair);
+  --font-montserrat: var(--font-montserrat);
+  --font-inter: var(--font-inter);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-navy);
+  color: var(--color-pearl);
+  font-family: var(--font-inter), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--color-gold);
+  color: var(--color-navy);
 }
