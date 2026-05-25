@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { collection, getDocs } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { getFeaturedProjects } from "@/lib/portfolio";
+import type { Project } from "@/lib/types";
 
 const services = [
   {
@@ -44,12 +44,6 @@ const services = [
   },
 ];
 
-const workPlaceholders = [
-  { category: "AI Media", title: "Coming soon" },
-  { category: "Brand Identity", title: "Coming soon" },
-  { category: "Web Design", title: "Coming soon" },
-];
-
 const testimonialPlaceholders = [
   {
     quote: "Working with Millennia Works elevated our brand beyond what we thought possible.",
@@ -64,20 +58,22 @@ const testimonialPlaceholders = [
 ];
 
 export default function Home() {
-  const [firebaseStatus, setFirebaseStatus] = useState<string>("");
+  const [featuredProjects, setFeaturedProjects] = useState<Project[]>([]);
+  const [projectsLoading, setProjectsLoading] = useState(true);
 
   useEffect(() => {
-    async function checkConnection() {
+    async function loadFeatured() {
       try {
-        await getDocs(collection(db, "test"));
-        setFirebaseStatus("connected");
-      } catch {
-        setFirebaseStatus("error");
+        const projects = await getFeaturedProjects();
+        setFeaturedProjects(projects);
+      } catch (err) {
+        console.error("Failed to load featured projects:", err);
+      } finally {
+        setProjectsLoading(false);
       }
     }
-    checkConnection();
+    loadFeatured();
   }, []);
-
   return (
     <main className="min-h-screen bg-navy text-pearl">
       <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-navy/70 border-b border-gold/10">
@@ -203,21 +199,46 @@ export default function Home() {
             </h2>
           </motion.div>
 
-          <div className="grid md:grid-cols-3 gap-6">
-            {workPlaceholders.map((item, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: i * 0.15 }}
-                className="aspect-[4/5] bg-graphite border border-gold/10 flex flex-col justify-end p-6 hover:border-gold/40 transition-colors cursor-pointer group"
-              >
-                <p className="text-xs tracking-widest text-gold mb-2 font-[family-name:var(--font-montserrat)]">{item.category}</p>
-                <h3 className="font-[family-name:var(--font-playfair)] text-2xl text-champagne/60 group-hover:text-pearl transition-colors">{item.title}</h3>
-              </motion.div>
-            ))}
+          {projectsLoading ? (
+  <p className="text-taupe text-sm text-center py-12">Loading work...</p>
+) : featuredProjects.length === 0 ? (
+  <div className="grid md:grid-cols-3 gap-6">
+    {[1, 2, 3].map((i) => (
+      <div key={i} className="aspect-[4/5] bg-graphite border border-gold/10 flex flex-col justify-end p-6">
+        <p className="text-xs tracking-widest text-gold mb-2 font-[family-name:var(--font-montserrat)]">Coming Soon</p>
+        <h3 className="font-[family-name:var(--font-playfair)] text-2xl text-champagne/60">In production</h3>
+      </div>
+    ))}
+  </div>
+) : (
+  <div className="grid md:grid-cols-3 gap-6">
+    {featuredProjects.map((p, i) => {
+      const card = (
+        <div className="aspect-[4/5] bg-graphite border border-gold/10 relative overflow-hidden hover:border-gold/40 transition-colors cursor-pointer group">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={p.imageUrl} alt={p.title} className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-opacity" />
+          <div className="absolute inset-0 bg-gradient-to-t from-navy via-navy/50 to-transparent" />
+          <div className="absolute bottom-0 left-0 right-0 p-6">
+            <p className="text-xs tracking-widest text-gold mb-2 font-[family-name:var(--font-montserrat)]">{p.category}</p>
+            <h3 className="font-[family-name:var(--font-playfair)] text-2xl text-pearl mb-1">{p.title}</h3>
+            {p.client && <p className="text-taupe text-xs">{p.client} · {p.year}</p>}
           </div>
+        </div>
+      );
+      return (
+        <motion.div
+          key={p.id}
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: i * 0.15 }}
+        >
+          {p.projectUrl ? <a href={p.projectUrl} target="_blank" rel="noopener noreferrer">{card}</a> : card}
+        </motion.div>
+      );
+    })}
+  </div>
+)}
         </div>
       </section>
 
@@ -286,9 +307,7 @@ export default function Home() {
           </div>
           <p className="text-taupe text-xs">© {new Date().getFullYear()} Millennia Works. All rights reserved.</p>
         </div>
-        {firebaseStatus === "error" && (
-          <p className="text-center text-red-400 text-xs mt-4">Firebase connection issue — check console</p>
-        )}
+        
       </footer>
     </main>
   );

@@ -77,25 +77,24 @@ export default function AdminDashboard() {
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {[
-            { name: "Portfolio", status: "Coming next" },
-            { name: "Testimonials", status: "Coming next" },
-            { name: "Blog", status: "Coming later" },
-            { name: "Inquiries", status: "Coming next" },
-            { name: "Services", status: "Coming later" },
-            { name: "Settings", status: "Coming later" },
-          ].map((mod) => (
-            <div
-              key={mod.name}
-              className="border border-gold/20 p-6 hover:border-gold/40 transition-colors"
-            >
-              <h3 className="font-[family-name:var(--font-playfair)] text-xl mb-2">
-                {mod.name}
-              </h3>
-              <p className="text-taupe text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)]">
-                {mod.status}
-              </p>
-            </div>
-          ))}
+  { name: "Portfolio", status: "Ready", href: "/admin/portfolio" },
+  { name: "Testimonials", status: "Coming next", href: null },
+  { name: "Blog", status: "Coming later", href: null },
+  { name: "Inquiries", status: "Coming next", href: null },
+  { name: "Services", status: "Coming later", href: null },
+  { name: "Settings", status: "Coming later", href: null },
+].map((mod) => {
+  const card = (
+    <div className={`border border-gold/20 p-6 transition-colors ${mod.href ? "hover:border-gold/60 cursor-pointer" : ""}`}>
+      <div className="flex items-center justify-between mb-2">
+        <h3 className="font-[family-name:var(--font-playfair)] text-xl">{mod.name}</h3>
+        {mod.status === "Ready" && <span className="text-[10px] bg-gold text-navy px-2 py-1 tracking-widest uppercase font-[family-name:var(--font-montserrat)]">Ready</span>}
+      </div>
+      <p className="text-taupe text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)]">{mod.status}</p>
+    </div>
+  );
+  return mod.href ? <a key={mod.name} href={mod.href}>{card}</a> : <div key={mod.name}>{card}</div>;
+})}
         </div>
       </section>
     </main>
