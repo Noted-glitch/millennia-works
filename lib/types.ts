@@ -51,3 +51,21 @@ export interface Inquiry {
   createdAt?: number;
   updatedAt?: number;
 }
+
+export const BLOG_STATUSES = ["draft", "published"] as const;
+export type BlogStatus = (typeof BLOG_STATUSES)[number];
+
+export interface BlogPost {
+  id?: string;
+  title: string;
+  slug: string;
+  excerpt: string;
+  content: string;
+  coverImageUrl?: string;
+  category: string;
+  author: string;
+  status: BlogStatus;
+  publishedAt?: number;
+  createdAt?: number;
+  updatedAt?: number;
+}

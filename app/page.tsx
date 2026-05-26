@@ -128,6 +128,7 @@ export default function Home() {
             <a href="#services" className="hover:text-gold transition-colors">Services</a>
             <a href="#about" className="hover:text-gold transition-colors">About</a>
             <a href="#work" className="hover:text-gold transition-colors">Work</a>
+            <a href="/blog" className="hover:text-gold transition-colors">Blog</a>
             <a href="#contact" className="hover:text-gold transition-colors">Contact</a>
           </div>
           <a href="#contact" className="text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] bg-gold text-navy px-5 py-2.5 rounded hover:bg-gold/90 transition-colors">Start a project</a>
