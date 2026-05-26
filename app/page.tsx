@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { getFeaturedProjects } from "@/lib/portfolio";
 import { getFeaturedTestimonials } from "@/lib/testimonials";
-import type { Project, Testimonial } from "@/lib/types";
+import { submitInquiry } from "@/lib/inquiries";
+import { PROJECT_CATEGORIES, type Project, type Testimonial } from "@/lib/types";
 
 const services = [
   {
@@ -91,6 +92,33 @@ export default function Home() {
     }
     loadTestimonials();
   }, []);
+
+  const [inquiryForm, setInquiryForm] = useState({ name: "", email: "", company: "", projectType: "", message: "" });
+  const [inquirySubmitting, setInquirySubmitting] = useState(false);
+  const [inquirySent, setInquirySent] = useState(false);
+  const [inquiryError, setInquiryError] = useState("");
+
+  async function handleInquirySubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setInquirySubmitting(true);
+    setInquiryError("");
+    try {
+      await submitInquiry({
+        name: inquiryForm.name,
+        email: inquiryForm.email,
+        message: inquiryForm.message,
+        company: inquiryForm.company || undefined,
+        projectType: inquiryForm.projectType || undefined,
+      });
+      setInquirySent(true);
+      setInquiryForm({ name: "", email: "", company: "", projectType: "", message: "" });
+    } catch (err) {
+      console.error("Failed to submit inquiry:", err);
+      setInquiryError("Something went wrong. Please email us directly.");
+    } finally {
+      setInquirySubmitting(false);
+    }
+  }
   return (
     <main className="min-h-screen bg-navy text-pearl">
       <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-navy/70 border-b border-gold/10">
@@ -332,19 +360,69 @@ export default function Home() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
-          className="max-w-3xl mx-auto text-center"
+          className="max-w-2xl mx-auto"
         >
-          <p className="text-xs tracking-[0.4em] uppercase text-gold mb-6 font-[family-name:var(--font-montserrat)]">Let&apos;s build</p>
-          <h2 className="font-[family-name:var(--font-playfair)] text-4xl md:text-6xl font-normal mb-8 leading-tight">
-            Ready to build<br />
-            <span className="text-gold italic">your empire?</span>
-          </h2>
-          <p className="text-champagne/80 text-base md:text-lg mb-10 max-w-xl mx-auto">
-            Tell us about what you&apos;re building. We respond within 24 hours.
-          </p>
-          <a href="mailto:david@millenniaworks.com" className="inline-block bg-gold text-navy text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] px-10 py-4 rounded hover:bg-pearl transition-colors">
-            david@millenniaworks.com
-          </a>
+          <div className="text-center mb-12">
+            <p className="text-xs tracking-[0.4em] uppercase text-gold mb-6 font-[family-name:var(--font-montserrat)]">Let&apos;s build</p>
+            <h2 className="font-[family-name:var(--font-playfair)] text-4xl md:text-6xl font-normal mb-8 leading-tight">
+              Ready to build<br />
+              <span className="text-gold italic">your empire?</span>
+            </h2>
+            <p className="text-champagne/80 text-base md:text-lg max-w-xl mx-auto">
+              Tell us about what you&apos;re building. We respond within 24 hours.
+            </p>
+          </div>
+
+          {inquirySent ? (
+            <div className="border border-gold/30 bg-gold/5 p-8 md:p-10 text-center">
+              <p className="text-gold text-3xl font-[family-name:var(--font-playfair)] mb-4">Thank you.</p>
+              <p className="text-champagne/80 text-base mb-6">Got it — we&apos;ll respond within 24 hours.</p>
+              <button onClick={() => setInquirySent(false)} className="text-gold text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] border-b border-gold pb-1 hover:text-pearl hover:border-pearl transition-colors">Send another</button>
+            </div>
+          ) : (
+            <form onSubmit={handleInquirySubmit} className="border border-gold/20 p-6 md:p-8 space-y-5">
+              <div className="grid md:grid-cols-2 gap-5">
+                <div>
+                  <label className="block text-xs tracking-widest uppercase text-taupe mb-2 font-[family-name:var(--font-montserrat)]">Name *</label>
+                  <input type="text" required value={inquiryForm.name} onChange={(e) => setInquiryForm({ ...inquiryForm, name: e.target.value })} className="w-full bg-transparent border border-gold/30 text-pearl px-4 py-3 focus:outline-none focus:border-gold" />
+                </div>
+
+                <div>
+                  <label className="block text-xs tracking-widest uppercase text-taupe mb-2 font-[family-name:var(--font-montserrat)]">Email *</label>
+                  <input type="email" required value={inquiryForm.email} onChange={(e) => setInquiryForm({ ...inquiryForm, email: e.target.value })} className="w-full bg-transparent border border-gold/30 text-pearl px-4 py-3 focus:outline-none focus:border-gold" />
+                </div>
+
+                <div>
+                  <label className="block text-xs tracking-widest uppercase text-taupe mb-2 font-[family-name:var(--font-montserrat)]">Company</label>
+                  <input type="text" value={inquiryForm.company} onChange={(e) => setInquiryForm({ ...inquiryForm, company: e.target.value })} className="w-full bg-transparent border border-gold/30 text-pearl px-4 py-3 focus:outline-none focus:border-gold" />
+                </div>
+
+                <div>
+                  <label className="block text-xs tracking-widest uppercase text-taupe mb-2 font-[family-name:var(--font-montserrat)]">Project type</label>
+                  <select value={inquiryForm.projectType} onChange={(e) => setInquiryForm({ ...inquiryForm, projectType: e.target.value })} className="w-full bg-navy border border-gold/30 text-pearl px-4 py-3 focus:outline-none focus:border-gold">
+                    <option value="">Select one...</option>
+                    {PROJECT_CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs tracking-widest uppercase text-taupe mb-2 font-[family-name:var(--font-montserrat)]">Message *</label>
+                <textarea required rows={5} value={inquiryForm.message} onChange={(e) => setInquiryForm({ ...inquiryForm, message: e.target.value })} className="w-full bg-transparent border border-gold/30 text-pearl px-4 py-3 focus:outline-none focus:border-gold resize-none" placeholder="Tell us about what you're building..." />
+              </div>
+
+              {inquiryError && (
+                <p className="border border-red-400/30 bg-red-400/10 text-red-400 text-sm px-4 py-3">{inquiryError}</p>
+              )}
+
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pt-2">
+                <button type="submit" disabled={inquirySubmitting} className="bg-gold text-navy text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] px-8 py-4 rounded hover:bg-pearl transition-colors disabled:opacity-50">
+                  {inquirySubmitting ? "Sending..." : "Send inquiry"}
+                </button>
+                <a href="mailto:david@millenniaworks.com" className="text-taupe text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] hover:text-gold transition-colors">or email david@millenniaworks.com</a>
+              </div>
+            </form>
+          )}
         </motion.div>
       </section>
 

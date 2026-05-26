@@ -34,3 +34,19 @@ export interface Testimonial {
   createdAt?: number;
   updatedAt?: number;
 }
+
+export const INQUIRY_STATUSES = ["new", "read", "replied", "archived"] as const;
+export type InquiryStatus = (typeof INQUIRY_STATUSES)[number];
+
+export interface Inquiry {
+  id?: string;
+  name: string;
+  email: string;
+  message: string;
+  company?: string;
+  projectType?: string;
+  status: InquiryStatus;
+  notes?: string;
+  createdAt?: number;
+  updatedAt?: number;
+}

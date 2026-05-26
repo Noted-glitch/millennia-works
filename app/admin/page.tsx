@@ -80,7 +80,7 @@ export default function AdminDashboard() {
   { name: "Portfolio", status: "Ready", href: "/admin/portfolio" },
   { name: "Testimonials", status: "Ready", href: "/admin/testimonials" },
   { name: "Blog", status: "Coming later", href: null },
-  { name: "Inquiries", status: "Coming next", href: null },
+  { name: "Inquiries", status: "Ready", href: "/admin/inquiries" },
   { name: "Services", status: "Coming later", href: null },
   { name: "Settings", status: "Coming later", href: null },
 ].map((mod) => {
