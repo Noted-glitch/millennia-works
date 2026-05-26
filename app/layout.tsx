@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Playfair_Display, Montserrat, Inter } from "next/font/google";
 import { SettingsProvider } from "@/lib/settings-context";
+import { getSettingsServer } from "@/lib/server/settings";
 import "./globals.css";
 
 const playfair = Playfair_Display({
@@ -21,28 +22,38 @@ const inter = Inter({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  title: "Millennia Works — From Idea To Empire",
-  description:
-    "Premium brand, content, and digital agency for founders building what lasts. Brand strategy, AI media, web development, marketing, publishing, and apps.",
-  keywords: [
-    "creative agency",
-    "digital agency",
-    "AI content",
-    "brand design",
-    "web development",
-    "Lagos",
-    "Nigeria",
-  ],
-  openGraph: {
-    title: "Millennia Works — From Idea To Empire",
-    description:
-      "Premium brand, content, and digital agency for founders building what lasts.",
-    url: "https://millenniaworks.com",
-    siteName: "Millennia Works",
-    type: "website",
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSettingsServer();
+  const ogImages = settings.ogImageUrl ? [{ url: settings.ogImageUrl }] : [];
+  return {
+    metadataBase: new URL("https://millenniaworks.com"),
+    title: settings.metaTitle,
+    description: settings.metaDescription,
+    keywords: [
+      "creative agency",
+      "digital agency",
+      "AI content",
+      "brand design",
+      "web development",
+      "Lagos",
+      "Nigeria",
+    ],
+    openGraph: {
+      title: settings.metaTitle,
+      description: settings.metaDescription,
+      url: "https://millenniaworks.com",
+      siteName: "Millennia Works",
+      type: "website",
+      images: ogImages,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: settings.metaTitle,
+      description: settings.metaDescription,
+      images: ogImages,
+    },
+  };
+}
 
 export default function RootLayout({
   children,
