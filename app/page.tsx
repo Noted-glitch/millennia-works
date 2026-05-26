@@ -4,46 +4,17 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { getFeaturedProjects } from "@/lib/portfolio";
 import { getFeaturedTestimonials } from "@/lib/testimonials";
+import { getFeaturedServices } from "@/lib/services";
 import { submitInquiry } from "@/lib/inquiries";
-import { PROJECT_CATEGORIES, type Project, type Testimonial } from "@/lib/types";
+import { PROJECT_CATEGORIES, type Project, type Testimonial, type Service } from "@/lib/types";
 
-const services = [
-  {
-    tag: "01",
-    title: "Brand & Creative",
-    description:
-      "Identity systems, logos, visual language, and brand strategy that signal authority from first impression.",
-  },
-  {
-    tag: "02",
-    title: "AI Content & Media",
-    description:
-      "AI-powered UGC, influencer models, product videos, book trailers, music videos, and cinematic content.",
-  },
-  {
-    tag: "03",
-    title: "Web & App Development",
-    description:
-      "Custom websites and web apps built with modern stacks. Owned, scalable, and built for performance.",
-  },
-  {
-    tag: "04",
-    title: "Digital Marketing",
-    description:
-      "Email campaigns, social media strategy, content marketing, and paid ads that convert ambition into revenue.",
-  },
-  {
-    tag: "05",
-    title: "Publishing & Books",
-    description:
-      "Writing, editing, formatting, interior design, publishing, and sales optimization for authors and brands.",
-  },
-  {
-    tag: "06",
-    title: "Apps & Games",
-    description:
-      "Native and web-based apps, plus original games. From MVP to launch, ready for app stores.",
-  },
+const servicePlaceholders = [
+  { tag: "01", title: "Brand & Creative", shortDescription: "Identity systems, logos, visual language, and brand strategy that signal authority from first impression." },
+  { tag: "02", title: "AI Content & Media", shortDescription: "AI-powered UGC, influencer models, product videos, book trailers, music videos, and cinematic content." },
+  { tag: "03", title: "Web & App Development", shortDescription: "Custom websites and web apps built with modern stacks. Owned, scalable, and built for performance." },
+  { tag: "04", title: "Digital Marketing", shortDescription: "Email campaigns, social media strategy, content marketing, and paid ads that convert ambition into revenue." },
+  { tag: "05", title: "Publishing & Books", shortDescription: "Writing, editing, formatting, interior design, publishing, and sales optimization for authors and brands." },
+  { tag: "06", title: "Apps & Games", shortDescription: "Native and web-based apps, plus original games. From MVP to launch, ready for app stores." },
 ];
 
 const testimonialPlaceholders = [
@@ -64,6 +35,8 @@ export default function Home() {
   const [projectsLoading, setProjectsLoading] = useState(true);
   const [featuredTestimonials, setFeaturedTestimonials] = useState<Testimonial[]>([]);
   const [testimonialsLoading, setTestimonialsLoading] = useState(true);
+  const [services, setServices] = useState<Service[]>([]);
+  const [servicesLoading, setServicesLoading] = useState(true);
 
   useEffect(() => {
     async function loadFeatured() {
@@ -91,6 +64,20 @@ export default function Home() {
       }
     }
     loadTestimonials();
+  }, []);
+
+  useEffect(() => {
+    async function loadServices() {
+      try {
+        const data = await getFeaturedServices();
+        setServices(data);
+      } catch (err) {
+        console.error("Failed to load services:", err);
+      } finally {
+        setServicesLoading(false);
+      }
+    }
+    loadServices();
   }, []);
 
   const [inquiryForm, setInquiryForm] = useState({ name: "", email: "", company: "", projectType: "", message: "" });
@@ -189,22 +176,45 @@ export default function Home() {
             </h2>
           </motion.div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-px bg-gold/10">
-            {services.map((service, i) => (
-              <motion.div
-                key={service.tag}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: i * 0.1 }}
-                className="bg-navy p-8 md:p-10 hover:bg-graphite transition-colors group cursor-pointer"
-              >
-                <p className="text-gold text-xs tracking-widest mb-6 font-[family-name:var(--font-montserrat)]">{service.tag}</p>
-                <h3 className="font-[family-name:var(--font-playfair)] text-2xl mb-4 group-hover:text-gold transition-colors">{service.title}</h3>
-                <p className="text-champagne/80 text-sm leading-relaxed">{service.description}</p>
-              </motion.div>
-            ))}
-          </div>
+          {servicesLoading ? (
+            <p className="text-taupe text-sm text-center py-12">Loading services...</p>
+          ) : services.length === 0 ? (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-px bg-gold/10">
+              {servicePlaceholders.map((service, i) => (
+                <motion.div
+                  key={service.tag}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: i * 0.1 }}
+                  className="bg-navy p-8 md:p-10 hover:bg-graphite transition-colors group"
+                >
+                  <p className="text-gold text-xs tracking-widest mb-6 font-[family-name:var(--font-montserrat)]">{service.tag}</p>
+                  <h3 className="font-[family-name:var(--font-playfair)] text-2xl mb-4 group-hover:text-gold transition-colors">{service.title}</h3>
+                  <p className="text-champagne/80 text-sm leading-relaxed">{service.shortDescription}</p>
+                </motion.div>
+              ))}
+            </div>
+          ) : (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-px bg-gold/10">
+              {services.map((service, i) => (
+                <motion.a
+                  key={service.id}
+                  href={`/services/${service.slug}`}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: i * 0.1 }}
+                  className="bg-navy p-8 md:p-10 hover:bg-graphite transition-colors group cursor-pointer block"
+                >
+                  <p className="text-gold text-xs tracking-widest mb-6 font-[family-name:var(--font-montserrat)]">{service.tag}</p>
+                  <h3 className="font-[family-name:var(--font-playfair)] text-2xl mb-4 group-hover:text-gold transition-colors">{service.title}</h3>
+                  <p className="text-champagne/80 text-sm leading-relaxed mb-4">{service.shortDescription}</p>
+                  <p className="text-gold text-[10px] tracking-widest uppercase font-[family-name:var(--font-montserrat)] opacity-0 group-hover:opacity-100 transition-opacity">Explore →</p>
+                </motion.a>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 

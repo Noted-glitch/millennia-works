@@ -81,7 +81,7 @@ export default function AdminDashboard() {
   { name: "Testimonials", status: "Ready", href: "/admin/testimonials" },
   { name: "Blog", status: "Ready", href: "/admin/blog" },
   { name: "Inquiries", status: "Ready", href: "/admin/inquiries" },
-  { name: "Services", status: "Coming later", href: null },
+  { name: "Services", status: "Ready", href: "/admin/services" },
   { name: "Settings", status: "Coming later", href: null },
 ].map((mod) => {
   const card = (

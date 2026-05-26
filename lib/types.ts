@@ -69,3 +69,19 @@ export interface BlogPost {
   createdAt?: number;
   updatedAt?: number;
 }
+
+export interface Service {
+  id?: string;
+  title: string;
+  slug: string;
+  category: string;
+  tag: string;
+  shortDescription: string;
+  longDescription: string;
+  bullets: string[];
+  coverImageUrl?: string;
+  order: number;
+  featured: boolean;
+  createdAt?: number;
+  updatedAt?: number;
+}
