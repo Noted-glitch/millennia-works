@@ -26,16 +26,13 @@ export async function getAllPosts(): Promise<BlogPost[]> {
 }
 
 export async function getPublishedPosts(): Promise<BlogPost[]> {
-  const q = query(
-    collection(db, COLLECTION),
-    where("status", "==", "published"),
-    orderBy("publishedAt", "desc")
-  );
+  const q = query(collection(db, COLLECTION), where("status", "==", "published"));
   const snapshot = await getDocs(q);
-  return snapshot.docs.map((doc) => ({
+  const posts = snapshot.docs.map((doc) => ({
     id: doc.id,
     ...doc.data(),
   })) as BlogPost[];
+  return posts.sort((a, b) => (b.publishedAt ?? 0) - (a.publishedAt ?? 0));
 }
 
 export async function getPostBySlug(
