@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { getFeaturedProjects } from "@/lib/portfolio";
-import type { Project } from "@/lib/types";
+import { getFeaturedTestimonials } from "@/lib/testimonials";
+import type { Project, Testimonial } from "@/lib/types";
 
 const services = [
   {
@@ -60,6 +61,8 @@ const testimonialPlaceholders = [
 export default function Home() {
   const [featuredProjects, setFeaturedProjects] = useState<Project[]>([]);
   const [projectsLoading, setProjectsLoading] = useState(true);
+  const [featuredTestimonials, setFeaturedTestimonials] = useState<Testimonial[]>([]);
+  const [testimonialsLoading, setTestimonialsLoading] = useState(true);
 
   useEffect(() => {
     async function loadFeatured() {
@@ -73,6 +76,20 @@ export default function Home() {
       }
     }
     loadFeatured();
+  }, []);
+
+  useEffect(() => {
+    async function loadTestimonials() {
+      try {
+        const testimonials = await getFeaturedTestimonials();
+        setFeaturedTestimonials(testimonials);
+      } catch (err) {
+        console.error("Failed to load featured testimonials:", err);
+      } finally {
+        setTestimonialsLoading(false);
+      }
+    }
+    loadTestimonials();
   }, []);
   return (
     <main className="min-h-screen bg-navy text-pearl">
@@ -255,25 +272,57 @@ export default function Home() {
             <h2 className="font-[family-name:var(--font-playfair)] text-4xl md:text-5xl font-normal">What clients say.</h2>
           </motion.div>
 
-          <div className="grid md:grid-cols-2 gap-8">
-            {testimonialPlaceholders.map((t, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: i * 0.15 }}
-                className="border border-gold/20 p-8 md:p-10"
-              >
-                <p className="text-gold text-3xl font-[family-name:var(--font-playfair)] mb-4">&ldquo;</p>
-                <p className="text-champagne text-base md:text-lg leading-relaxed italic font-[family-name:var(--font-playfair)] mb-6">{t.quote}</p>
-                <div>
-                  <p className="text-pearl text-sm font-medium">{t.name}</p>
-                  <p className="text-taupe text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] mt-1">{t.role}</p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
+          {testimonialsLoading ? (
+            <p className="text-taupe text-sm text-center py-12">Loading testimonials...</p>
+          ) : featuredTestimonials.length === 0 ? (
+            <div className="grid md:grid-cols-2 gap-8">
+              {testimonialPlaceholders.map((t, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: i * 0.15 }}
+                  className="border border-gold/20 p-8 md:p-10"
+                >
+                  <p className="text-gold text-3xl font-[family-name:var(--font-playfair)] mb-4">&ldquo;</p>
+                  <p className="text-champagne text-base md:text-lg leading-relaxed italic font-[family-name:var(--font-playfair)] mb-6">{t.quote}</p>
+                  <div>
+                    <p className="text-pearl text-sm font-medium">{t.name}</p>
+                    <p className="text-taupe text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] mt-1">{t.role}</p>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          ) : (
+            <div className="grid md:grid-cols-2 gap-8">
+              {featuredTestimonials.map((t, i) => (
+                <motion.div
+                  key={t.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: i * 0.15 }}
+                  className="border border-gold/20 p-8 md:p-10"
+                >
+                  <div className="flex items-start gap-4 mb-4">
+                    {t.photoUrl && (
+                      <div className="w-14 h-14 rounded-full overflow-hidden bg-graphite flex-shrink-0">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={t.photoUrl} alt={t.clientName} className="w-full h-full object-cover" />
+                      </div>
+                    )}
+                    <p className="text-gold text-3xl font-[family-name:var(--font-playfair)]">&ldquo;</p>
+                  </div>
+                  <p className="text-champagne text-base md:text-lg leading-relaxed italic font-[family-name:var(--font-playfair)] mb-6">{t.quote}</p>
+                  <div>
+                    <p className="text-pearl text-sm font-medium">{t.clientName}</p>
+                    <p className="text-taupe text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] mt-1">{t.role}{t.role && t.company && " · "}{t.company}</p>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 

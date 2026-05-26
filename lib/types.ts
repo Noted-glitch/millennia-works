@@ -21,3 +21,16 @@ export const PROJECT_CATEGORIES = [
   "Publishing & Books",
   "Apps & Games",
 ] as const;
+
+export interface Testimonial {
+  id?: string;
+  quote: string;
+  clientName: string;
+  role: string;
+  company: string;
+  photoUrl?: string;
+  featured: boolean;
+  order: number;
+  createdAt?: number;
+  updatedAt?: number;
+}

@@ -78,7 +78,7 @@ export default function AdminDashboard() {
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {[
   { name: "Portfolio", status: "Ready", href: "/admin/portfolio" },
-  { name: "Testimonials", status: "Coming next", href: null },
+  { name: "Testimonials", status: "Ready", href: "/admin/testimonials" },
   { name: "Blog", status: "Coming later", href: null },
   { name: "Inquiries", status: "Coming next", href: null },
   { name: "Services", status: "Coming later", href: null },
