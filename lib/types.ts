@@ -28,6 +28,7 @@ export interface Testimonial {
   clientName: string;
   role: string;
   company: string;
+  category: string;
   photoUrl?: string;
   featured: boolean;
   order: number;

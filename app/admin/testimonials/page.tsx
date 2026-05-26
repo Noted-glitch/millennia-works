@@ -5,13 +5,14 @@ import { useRouter } from "next/navigation";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { getAllTestimonials, createTestimonial, updateTestimonial, deleteTestimonial } from "@/lib/testimonials";
-import type { Testimonial } from "@/lib/types";
+import { PROJECT_CATEGORIES, type Testimonial } from "@/lib/types";
 
 const emptyTestimonial: Omit<Testimonial, "id" | "createdAt" | "updatedAt"> = {
   quote: "",
   clientName: "",
   role: "",
   company: "",
+  category: PROJECT_CATEGORIES[0],
   photoUrl: "",
   featured: false,
   order: 0,
@@ -65,6 +66,7 @@ export default function TestimonialsManager() {
       clientName: t.clientName,
       role: t.role,
       company: t.company,
+      category: t.category || PROJECT_CATEGORIES[0],
       photoUrl: t.photoUrl || "",
       featured: t.featured,
       order: t.order,
@@ -158,6 +160,13 @@ export default function TestimonialsManager() {
               </div>
 
               <div>
+                <label className="block text-xs tracking-widest uppercase text-taupe mb-2 font-[family-name:var(--font-montserrat)]">Category *</label>
+                <select required value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} className="w-full bg-navy border border-gold/30 text-pearl px-4 py-3 focus:outline-none focus:border-gold">
+                  {PROJECT_CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
+                </select>
+              </div>
+
+              <div>
                 <label className="block text-xs tracking-widest uppercase text-taupe mb-2 font-[family-name:var(--font-montserrat)]">Role</label>
                 <input type="text" value={form.role} onChange={(e) => setForm({ ...form, role: e.target.value })} className="w-full bg-transparent border border-gold/30 text-pearl px-4 py-3 focus:outline-none focus:border-gold" placeholder="Founder, CEO, etc." />
               </div>
@@ -208,7 +217,7 @@ export default function TestimonialsManager() {
             {testimonials.map((t) => (
               <div key={t.id} className="border border-gold/20 overflow-hidden flex flex-col">
                 <div className="p-5 flex-1 flex flex-col">
-                  <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center justify-between mb-3">
                     {t.photoUrl ? (
                       <div className="w-12 h-12 rounded-full overflow-hidden bg-graphite">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -219,6 +228,7 @@ export default function TestimonialsManager() {
                     )}
                     {t.featured && <span className="text-[10px] bg-gold text-navy px-2 py-1 tracking-widest uppercase font-[family-name:var(--font-montserrat)]">Featured</span>}
                   </div>
+                  <p className="text-gold text-[10px] tracking-widest uppercase mb-3 font-[family-name:var(--font-montserrat)]">{t.category}</p>
                   <p className="text-gold text-2xl font-[family-name:var(--font-playfair)] mb-2">&ldquo;</p>
                   <p className="text-champagne/80 text-sm italic mb-4 line-clamp-4 font-[family-name:var(--font-playfair)]">{t.quote}</p>
                   <div className="mb-4">
