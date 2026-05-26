@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Playfair_Display, Montserrat, Inter } from "next/font/google";
+import { SettingsProvider } from "@/lib/settings-context";
 import "./globals.css";
 
 const playfair = Playfair_Display({
@@ -53,7 +54,7 @@ export default function RootLayout({
       <body
         className={`${playfair.variable} ${montserrat.variable} ${inter.variable} antialiased`}
       >
-        {children}
+        <SettingsProvider>{children}</SettingsProvider>
       </body>
     </html>
   );

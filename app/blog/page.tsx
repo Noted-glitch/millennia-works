@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { getPublishedPosts } from "@/lib/blog";
+import { SiteNav } from "@/components/SiteNav";
+import { SiteFooter } from "@/components/SiteFooter";
 import type { BlogPost } from "@/lib/types";
 
 function formatDate(ms?: number) {
@@ -30,17 +32,7 @@ export default function BlogIndex() {
 
   return (
     <main className="min-h-screen bg-navy text-pearl">
-      <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-navy/70 border-b border-gold/10">
-        <div className="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
-          <a href="/" className="font-[family-name:var(--font-playfair)] text-xl tracking-wider text-gold">MW</a>
-          <div className="hidden md:flex items-center gap-8 text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] text-pearl/80">
-            <a href="/" className="hover:text-gold transition-colors">Home</a>
-            <a href="/blog" className="text-gold transition-colors">Blog</a>
-            <a href="/#contact" className="hover:text-gold transition-colors">Contact</a>
-          </div>
-          <a href="/#contact" className="text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] bg-gold text-navy px-5 py-2.5 rounded hover:bg-gold/90 transition-colors">Start a project</a>
-        </div>
-      </nav>
+      <SiteNav activeLink="blog" />
 
       <section className="pt-32 pb-16 px-6 border-b border-gold/10">
         <motion.div
@@ -101,15 +93,7 @@ export default function BlogIndex() {
         </div>
       </section>
 
-      <footer className="py-12 px-6 border-t border-gold/10">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
-          <div>
-            <p className="font-[family-name:var(--font-playfair)] text-xl tracking-wider text-gold mb-1">Millennia Works</p>
-            <p className="text-taupe text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)]">From Idea To Empire</p>
-          </div>
-          <p className="text-taupe text-xs">© {new Date().getFullYear()} Millennia Works. All rights reserved.</p>
-        </div>
-      </footer>
+      <SiteFooter />
     </main>
   );
 }

@@ -6,7 +6,10 @@ import { getFeaturedProjects } from "@/lib/portfolio";
 import { getFeaturedTestimonials } from "@/lib/testimonials";
 import { getFeaturedServices } from "@/lib/services";
 import { submitInquiry } from "@/lib/inquiries";
+import { useSettings } from "@/lib/settings-context";
 import { PROJECT_CATEGORIES, type Project, type Testimonial, type Service } from "@/lib/types";
+import { SiteNav } from "@/components/SiteNav";
+import { SiteFooter } from "@/components/SiteFooter";
 
 const servicePlaceholders = [
   { tag: "01", title: "Brand & Creative", shortDescription: "Identity systems, logos, visual language, and brand strategy that signal authority from first impression." },
@@ -31,6 +34,7 @@ const testimonialPlaceholders = [
 ];
 
 export default function Home() {
+  const { settings } = useSettings();
   const [featuredProjects, setFeaturedProjects] = useState<Project[]>([]);
   const [projectsLoading, setProjectsLoading] = useState(true);
   const [featuredTestimonials, setFeaturedTestimonials] = useState<Testimonial[]>([]);
@@ -108,38 +112,53 @@ export default function Home() {
   }
   return (
     <main className="min-h-screen bg-navy text-pearl">
-      <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-navy/70 border-b border-gold/10">
-        <div className="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
-          <a href="#" className="font-[family-name:var(--font-playfair)] text-xl tracking-wider text-gold">MW</a>
-          <div className="hidden md:flex items-center gap-8 text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] text-pearl/80">
-            <a href="#services" className="hover:text-gold transition-colors">Services</a>
-            <a href="#about" className="hover:text-gold transition-colors">About</a>
-            <a href="#work" className="hover:text-gold transition-colors">Work</a>
-            <a href="/blog" className="hover:text-gold transition-colors">Blog</a>
-            <a href="#contact" className="hover:text-gold transition-colors">Contact</a>
-          </div>
-          <a href="#contact" className="text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] bg-gold text-navy px-5 py-2.5 rounded hover:bg-gold/90 transition-colors">Start a project</a>
-        </div>
-      </nav>
+      <SiteNav activeLink="home" />
 
-      <section className="relative min-h-screen flex items-center justify-center px-6 pt-20">
+      <section className="relative min-h-screen flex items-center justify-center px-6 pt-20 overflow-hidden">
+        {settings.heroMediaType === "video" && settings.heroVideoUrl && (
+          <>
+            <video
+              className="hidden md:block absolute inset-0 w-full h-full object-cover z-0"
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="metadata"
+              poster={settings.heroVideoPoster || undefined}
+            >
+              <source src={settings.heroVideoUrl} type="video/mp4" />
+            </video>
+            {settings.heroVideoPoster && (
+              /* eslint-disable-next-line @next/next/no-img-element */
+              <img src={settings.heroVideoPoster} alt="" className="md:hidden absolute inset-0 w-full h-full object-cover z-0" />
+            )}
+            <div className="absolute inset-0 bg-navy z-[1]" style={{ opacity: settings.heroOverlayOpacity / 100 }} />
+          </>
+        )}
+        {settings.heroMediaType === "image" && settings.heroImageUrl && (
+          <>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={settings.heroImageUrl} alt="" className="absolute inset-0 w-full h-full object-cover z-0" />
+            <div className="absolute inset-0 bg-navy z-[1]" style={{ opacity: settings.heroOverlayOpacity / 100 }} />
+          </>
+        )}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, ease: "easeOut" }}
-          className="text-center max-w-3xl mx-auto"
+          className="relative z-10 text-center max-w-3xl mx-auto"
         >
-          <p className="font-[family-name:var(--font-playfair)] text-xs tracking-[0.4em] uppercase text-gold mb-8">Millennia Works</p>
+          <p className="font-[family-name:var(--font-playfair)] text-xs tracking-[0.4em] uppercase text-gold mb-8">{settings.heroEyebrow}</p>
           <h1 className="font-[family-name:var(--font-playfair)] text-5xl md:text-7xl font-normal leading-tight tracking-tight mb-6">
-            From Idea<br />
-            <span className="text-gold italic">To Empire.</span>
+            {settings.heroTitleLine1}<br />
+            <span className="text-gold italic">{settings.heroTitleLine2}</span>
           </h1>
           <p className="text-base md:text-lg text-champagne max-w-xl mx-auto mb-10 leading-relaxed">
-            Premium brand, content, and digital agency for founders building what lasts.
+            {settings.heroSubtitle}
           </p>
           <div className="flex gap-4 justify-center flex-wrap">
-            <a href="#contact" className="bg-gold text-navy text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] px-7 py-3.5 rounded hover:bg-gold/90 transition-colors">Start a project</a>
-            <a href="#work" className="border border-gold text-gold text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] px-7 py-3.5 rounded hover:bg-gold hover:text-navy transition-colors">View our work</a>
+            <a href="#contact" className="bg-gold text-navy text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] px-7 py-3.5 rounded hover:bg-gold/90 transition-colors">{settings.heroCtaPrimaryLabel}</a>
+            <a href="#work" className="border border-gold text-gold text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] px-7 py-3.5 rounded hover:bg-gold hover:text-navy transition-colors">{settings.heroCtaSecondaryLabel}</a>
           </div>
         </motion.div>
 
@@ -147,7 +166,7 @@ export default function Home() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1, delay: 0.6 }}
-          className="absolute bottom-12 left-0 right-0 px-6"
+          className="absolute bottom-12 left-0 right-0 px-6 z-10"
         >
           <div className="max-w-5xl mx-auto pt-6 border-t border-gold/20 flex justify-center gap-6 md:gap-10 flex-wrap text-[10px] tracking-[0.3em] text-taupe font-[family-name:var(--font-montserrat)]">
             <span>BRAND</span>
@@ -197,7 +216,9 @@ export default function Home() {
             </div>
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-px bg-gold/10">
-              {services.map((service, i) => (
+              {services
+                .filter((s) => settings.servicesEnabled[s.category] !== false)
+                .map((service, i) => (
                 <motion.a
                   key={service.id}
                   href={`/services/${service.slug}`}
@@ -226,13 +247,12 @@ export default function Home() {
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
           >
-            <p className="text-xs tracking-[0.4em] uppercase text-gold mb-6 font-[family-name:var(--font-montserrat)]">Who we are</p>
+            <p className="text-xs tracking-[0.4em] uppercase text-gold mb-6 font-[family-name:var(--font-montserrat)]">{settings.aboutEyebrow}</p>
             <h2 className="font-[family-name:var(--font-playfair)] text-4xl md:text-5xl font-normal mb-8 leading-tight">
-              We build the digital infrastructure<br />
-              <span className="text-gold italic">behind ambitious brands.</span>
+              {settings.aboutTitle}
             </h2>
             <p className="text-champagne/80 text-base md:text-lg leading-relaxed mb-8 max-w-2xl mx-auto">
-              Millennia Works is a full-service creative and digital agency built for founders who refuse to compete on price. We combine brand strategy, AI-powered content, world-class development, and sharp marketing into a single, integrated practice — so every piece of your empire moves in the same direction.
+              {settings.aboutBody}
             </p>
             <a href="#contact" className="inline-block text-gold text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] border-b border-gold pb-1 hover:text-pearl hover:border-pearl transition-colors">Learn more →</a>
           </motion.div>
@@ -376,18 +396,17 @@ export default function Home() {
           <div className="text-center mb-12">
             <p className="text-xs tracking-[0.4em] uppercase text-gold mb-6 font-[family-name:var(--font-montserrat)]">Let&apos;s build</p>
             <h2 className="font-[family-name:var(--font-playfair)] text-4xl md:text-6xl font-normal mb-8 leading-tight">
-              Ready to build<br />
-              <span className="text-gold italic">your empire?</span>
+              {settings.contactCtaHeadline}
             </h2>
             <p className="text-champagne/80 text-base md:text-lg max-w-xl mx-auto">
-              Tell us about what you&apos;re building. We respond within 24 hours.
+              {settings.contactCtaSubhead} {settings.responseTimePromise}
             </p>
           </div>
 
           {inquirySent ? (
             <div className="border border-gold/30 bg-gold/5 p-8 md:p-10 text-center">
               <p className="text-gold text-3xl font-[family-name:var(--font-playfair)] mb-4">Thank you.</p>
-              <p className="text-champagne/80 text-base mb-6">Got it — we&apos;ll respond within 24 hours.</p>
+              <p className="text-champagne/80 text-base mb-6">Got it — {settings.responseTimePromise.toLowerCase()}</p>
               <button onClick={() => setInquirySent(false)} className="text-gold text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] border-b border-gold pb-1 hover:text-pearl hover:border-pearl transition-colors">Send another</button>
             </div>
           ) : (
@@ -428,25 +447,27 @@ export default function Home() {
 
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pt-2">
                 <button type="submit" disabled={inquirySubmitting} className="bg-gold text-navy text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] px-8 py-4 rounded hover:bg-pearl transition-colors disabled:opacity-50">
-                  {inquirySubmitting ? "Sending..." : "Send inquiry"}
+                  {inquirySubmitting ? "Sending..." : settings.contactCtaButtonLabel}
                 </button>
-                <a href="mailto:david@millenniaworks.com" className="text-taupe text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] hover:text-gold transition-colors">or email david@millenniaworks.com</a>
+                <a href={`mailto:${settings.contactEmail}`} className="text-taupe text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] hover:text-gold transition-colors">or email {settings.contactEmail}</a>
               </div>
             </form>
+          )}
+
+          {(settings.whatsappNumber || settings.bookingLink) && !inquirySent && (
+            <div className="flex justify-center gap-3 flex-wrap mt-6">
+              {settings.whatsappNumber && (
+                <a href={`https://wa.me/${settings.whatsappNumber.replace(/[^0-9]/g, "")}`} target="_blank" rel="noopener noreferrer" className="border border-gold/30 text-gold text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] px-5 py-2.5 rounded hover:bg-gold/10 transition-colors">WhatsApp →</a>
+              )}
+              {settings.bookingLink && (
+                <a href={settings.bookingLink} target="_blank" rel="noopener noreferrer" className="border border-gold/30 text-gold text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] px-5 py-2.5 rounded hover:bg-gold/10 transition-colors">Book a call →</a>
+              )}
+            </div>
           )}
         </motion.div>
       </section>
 
-      <footer className="py-12 px-6 border-t border-gold/10">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
-          <div>
-            <p className="font-[family-name:var(--font-playfair)] text-xl tracking-wider text-gold mb-1">Millennia Works</p>
-            <p className="text-taupe text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)]">From Idea To Empire</p>
-          </div>
-          <p className="text-taupe text-xs">© {new Date().getFullYear()} Millennia Works. All rights reserved.</p>
-        </div>
-        
-      </footer>
+      <SiteFooter />
     </main>
   );
 }

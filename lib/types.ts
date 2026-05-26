@@ -85,3 +85,60 @@ export interface Service {
   createdAt?: number;
   updatedAt?: number;
 }
+
+export type HeroMediaType = "color" | "video" | "image";
+
+export interface AnnouncementBar {
+  enabled: boolean;
+  text: string;
+  linkLabel: string;
+  linkUrl: string;
+}
+
+export interface SocialLink {
+  label: string;
+  url: string;
+}
+
+export type ServicesEnabled = Record<string, boolean>;
+
+export interface SiteSettings {
+  contactEmail: string;
+  tagline: string;
+
+  heroEyebrow: string;
+  heroTitleLine1: string;
+  heroTitleLine2: string;
+  heroSubtitle: string;
+  heroCtaPrimaryLabel: string;
+  heroCtaSecondaryLabel: string;
+
+  heroMediaType: HeroMediaType;
+  heroVideoUrl: string;
+  heroVideoPoster: string;
+  heroImageUrl: string;
+  heroOverlayOpacity: number;
+
+  aboutEyebrow: string;
+  aboutTitle: string;
+  aboutBody: string;
+
+  contactCtaHeadline: string;
+  contactCtaSubhead: string;
+  contactCtaButtonLabel: string;
+  responseTimePromise: string;
+  whatsappNumber: string;
+  bookingLink: string;
+
+  metaTitle: string;
+  metaDescription: string;
+  ogImageUrl: string;
+
+  announcementBar: AnnouncementBar;
+
+  servicesEnabled: ServicesEnabled;
+
+  socialLinks: SocialLink[];
+
+  updatedAt?: number;
+}

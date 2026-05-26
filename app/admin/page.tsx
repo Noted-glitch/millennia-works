@@ -82,7 +82,7 @@ export default function AdminDashboard() {
   { name: "Blog", status: "Ready", href: "/admin/blog" },
   { name: "Inquiries", status: "Ready", href: "/admin/inquiries" },
   { name: "Services", status: "Ready", href: "/admin/services" },
-  { name: "Settings", status: "Coming later", href: null },
+  { name: "Settings", status: "Ready", href: "/admin/settings" },
 ].map((mod) => {
   const card = (
     <div className={`border border-gold/20 p-6 transition-colors ${mod.href ? "hover:border-gold/60 cursor-pointer" : ""}`}>
