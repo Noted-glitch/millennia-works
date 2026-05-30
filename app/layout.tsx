@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Playfair_Display, Montserrat, Inter } from "next/font/google";
 import { SettingsProvider } from "@/lib/settings-context";
 import { getSettingsServer } from "@/lib/server/settings";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
 const playfair = Playfair_Display({
@@ -66,6 +67,7 @@ export default function RootLayout({
         className={`${playfair.variable} ${montserrat.variable} ${inter.variable} antialiased`}
       >
         <SettingsProvider>{children}</SettingsProvider>
+        <Analytics />
       </body>
     </html>
   );
