@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useSettings } from "@/lib/settings-context";
 
 export type SiteNavActiveLink = "home" | "services" | "about" | "work" | "blog" | "contact" | null;
@@ -31,7 +32,16 @@ export function SiteNav({ activeLink = null }: { activeLink?: SiteNavActiveLink 
 
       <nav className={`fixed left-0 right-0 z-50 backdrop-blur-md bg-navy/70 border-b border-gold/10 ${bar.enabled && bar.text ? "top-[42px]" : "top-0"}`}>
         <div className="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
-          <a href="/" className="font-[family-name:var(--font-playfair)] text-xl tracking-wider text-gold">MW</a>
+          <a href="/" className="inline-flex items-center" aria-label="Millennia Works home">
+            <Image
+              src="/brand/logo-icon-gold.png"
+              alt="Millennia Works"
+              width={64}
+              height={64}
+              priority
+              className="h-7 md:h-8 w-auto"
+            />
+          </a>
           <div className="hidden md:flex items-center gap-8 text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] text-pearl/80">
             {LINKS.map((l) => (
               <a key={l.key} href={l.href} className={`transition-colors ${activeLink === l.key ? "text-gold" : "hover:text-gold"}`}>{l.label}</a>

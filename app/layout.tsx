@@ -24,7 +24,7 @@ const inter = Inter({
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSettingsServer();
-  const ogImages = settings.ogImageUrl ? [{ url: settings.ogImageUrl }] : [];
+  const ogImages = [{ url: settings.ogImageUrl || "/brand/og-fallback.png" }];
   return {
     metadataBase: new URL("https://millenniaworks.com"),
     title: settings.metaTitle,

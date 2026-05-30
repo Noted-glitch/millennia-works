@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useSettings } from "@/lib/settings-context";
 
 export function SiteFooter() {
@@ -9,8 +10,16 @@ export function SiteFooter() {
   return (
     <footer className="py-12 px-6 border-t border-gold/10">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
-        <div className="text-center md:text-left">
-          <p className="font-[family-name:var(--font-playfair)] text-xl tracking-wider text-gold mb-1">Millennia Works</p>
+        <div className="flex flex-col items-center md:items-start gap-3">
+          <a href="/" className="inline-flex" aria-label="Millennia Works home">
+            <Image
+              src="/brand/logo-icon-gold.png"
+              alt="Millennia Works"
+              width={80}
+              height={80}
+              className="h-10 w-auto"
+            />
+          </a>
           <p className="text-taupe text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)]">{settings.tagline}</p>
         </div>
 
