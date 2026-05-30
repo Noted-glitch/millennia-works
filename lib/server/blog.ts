@@ -16,3 +16,15 @@ export async function getPostBySlugServer(slug: string): Promise<BlogPost | null
     return null;
   }
 }
+
+export async function getPublishedPostsServer(): Promise<BlogPost[]> {
+  const db = getAdminDb();
+  if (!db) return [];
+  try {
+    const snapshot = await db.collection("posts").where("status", "==", "published").get();
+    return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })) as BlogPost[];
+  } catch (err) {
+    console.error("getPublishedPostsServer failed —", err);
+    return [];
+  }
+}

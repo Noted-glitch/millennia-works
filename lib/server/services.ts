@@ -14,3 +14,15 @@ export async function getServiceBySlugServer(slug: string): Promise<Service | nu
     return null;
   }
 }
+
+export async function getAllServicesServer(): Promise<Service[]> {
+  const db = getAdminDb();
+  if (!db) return [];
+  try {
+    const snapshot = await db.collection("services").get();
+    return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })) as Service[];
+  } catch (err) {
+    console.error("getAllServicesServer failed —", err);
+    return [];
+  }
+}
