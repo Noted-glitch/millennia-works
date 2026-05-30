@@ -2,6 +2,8 @@ import type { MetadataRoute } from "next";
 import { getPublishedPostsServer } from "@/lib/server/blog";
 import { getAllServicesServer } from "@/lib/server/services";
 
+export const revalidate = 3600;
+
 const BASE_URL = "https://millenniaworks.com";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
