@@ -17,7 +17,7 @@ export function SiteFooter() {
               alt="Millennia Works"
               width={80}
               height={80}
-              className="h-10 w-auto"
+              className="h-14 w-auto"
             />
           </a>
           <p className="text-taupe text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)]">{settings.tagline}</p>

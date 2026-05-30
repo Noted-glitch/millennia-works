@@ -39,7 +39,7 @@ export function SiteNav({ activeLink = null }: { activeLink?: SiteNavActiveLink 
               width={64}
               height={64}
               priority
-              className="h-7 md:h-8 w-auto"
+              className="h-10 md:h-12 w-auto"
             />
           </a>
           <div className="hidden md:flex items-center gap-8 text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] text-pearl/80">
