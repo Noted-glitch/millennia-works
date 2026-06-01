@@ -83,6 +83,11 @@ export default function PortfolioManager() {
     setSaving(true);
     setMessage("");
     try {
+      if (!form.imageUrl) {
+        setMessage("Please upload a project image.");
+        setSaving(false);
+        return;
+      }
       if (editingId) {
         await updateProject(editingId, form);
         setMessage("Project updated.");
