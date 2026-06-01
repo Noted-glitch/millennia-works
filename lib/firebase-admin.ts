@@ -1,5 +1,6 @@
 import { cert, getApps, initializeApp, type App } from "firebase-admin/app";
 import { getFirestore, type Firestore } from "firebase-admin/firestore";
+import { getAuth, type Auth } from "firebase-admin/auth";
 
 let cachedApp: App | null = null;
 let initAttempted = false;
@@ -46,6 +47,17 @@ export function getAdminDb(): Firestore | null {
     return getFirestore(app);
   } catch (err) {
     console.error("firebase-admin: getFirestore failed —", err);
+    return null;
+  }
+}
+
+export function getAdminAuth(): Auth | null {
+  const app = initAdmin();
+  if (!app) return null;
+  try {
+    return getAuth(app);
+  } catch (err) {
+    console.error("firebase-admin: getAuth failed —", err);
     return null;
   }
 }
