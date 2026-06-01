@@ -6,6 +6,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { getAllPosts, createPost, updatePost, deletePost } from "@/lib/blog";
 import { slugify } from "@/lib/slug";
+import ImageUpload from "@/components/ImageUpload";
 import { PROJECT_CATEGORIES, BLOG_STATUSES, type BlogPost, type BlogStatus } from "@/lib/types";
 
 const emptyPost: Omit<BlogPost, "id" | "createdAt" | "updatedAt"> = {
@@ -219,10 +220,12 @@ export default function BlogManager() {
                 <input type="text" value={form.author} onChange={(e) => setForm({ ...form, author: e.target.value })} className="w-full bg-transparent border border-gold/30 text-pearl px-4 py-3 focus:outline-none focus:border-gold" />
               </div>
 
-              <div>
-                <label className="block text-xs tracking-widest uppercase text-taupe mb-2 font-[family-name:var(--font-montserrat)]">Cover image URL</label>
-                <input type="url" value={form.coverImageUrl} onChange={(e) => setForm({ ...form, coverImageUrl: e.target.value })} className="w-full bg-transparent border border-gold/30 text-pearl px-4 py-3 focus:outline-none focus:border-gold" placeholder="https://..." />
-              </div>
+              <ImageUpload
+                category="blog"
+                label="Cover image"
+                value={form.coverImageUrl}
+                onChange={(url) => setForm({ ...form, coverImageUrl: url })}
+              />
             </div>
 
             <div>

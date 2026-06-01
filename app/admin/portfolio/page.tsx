@@ -6,6 +6,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { getAllProjects, createProject, updateProject, deleteProject } from "@/lib/portfolio";
 import { PROJECT_CATEGORIES, type Project } from "@/lib/types";
+import ImageUpload from "@/components/ImageUpload";
 
 const emptyProject: Omit<Project, "id" | "createdAt" | "updatedAt"> = {
   title: "",
@@ -179,11 +180,12 @@ export default function PortfolioManager() {
               <textarea required rows={4} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} className="w-full bg-transparent border border-gold/30 text-pearl px-4 py-3 focus:outline-none focus:border-gold resize-none" />
             </div>
 
-            <div>
-              <label className="block text-xs tracking-widest uppercase text-taupe mb-2 font-[family-name:var(--font-montserrat)]">Image URL *</label>
-              <input type="url" required value={form.imageUrl} onChange={(e) => setForm({ ...form, imageUrl: e.target.value })} className="w-full bg-transparent border border-gold/30 text-pearl px-4 py-3 focus:outline-none focus:border-gold" placeholder="https://..." />
-              <p className="text-taupe text-xs mt-2">Paste a direct image URL. R2 drag-and-drop upload coming soon.</p>
-            </div>
+            <ImageUpload
+              category="portfolio"
+              label="Project image *"
+              value={form.imageUrl}
+              onChange={(url) => setForm({ ...form, imageUrl: url })}
+            />
 
             <div>
               <label className="block text-xs tracking-widest uppercase text-taupe mb-2 font-[family-name:var(--font-montserrat)]">Project URL / Case study</label>

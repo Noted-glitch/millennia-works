@@ -7,6 +7,7 @@ import { auth } from "@/lib/firebase";
 import { updateSettings } from "@/lib/settings";
 import { useSettings } from "@/lib/settings-context";
 import { PROJECT_CATEGORIES, type HeroMediaType, type SiteSettings } from "@/lib/types";
+import ImageUpload from "@/components/ImageUpload";
 
 function SectionCard({ eyebrow, title, children }: { eyebrow: string; title: string; children: React.ReactNode }) {
   return (
@@ -176,12 +177,12 @@ export default function SettingsManager() {
           {form.heroMediaType === "video" && (
             <>
               <TextField label="Video URL" type="url" value={form.heroVideoUrl} onChange={(v) => update("heroVideoUrl", v)} placeholder="https://... (self-hosted MP4)" hint="MP4, H.264 encoded. Hosted on R2/Cloudinary/Vercel Blob. Skipped on mobile in favor of the poster." />
-              <TextField label="Video poster URL" type="url" value={form.heroVideoPoster} onChange={(v) => update("heroVideoPoster", v)} placeholder="https://..." hint="Shown while video loads, and as the mobile fallback." />
+              <ImageUpload category="settings" label="Video poster" value={form.heroVideoPoster} onChange={(v) => update("heroVideoPoster", v)} />
             </>
           )}
 
           {form.heroMediaType === "image" && (
-            <TextField label="Image URL" type="url" value={form.heroImageUrl} onChange={(v) => update("heroImageUrl", v)} placeholder="https://..." />
+            <ImageUpload category="settings" label="Hero image" value={form.heroImageUrl} onChange={(v) => update("heroImageUrl", v)} />
           )}
 
           {form.heroMediaType !== "color" && (
@@ -216,7 +217,8 @@ export default function SettingsManager() {
           <p className="text-taupe text-xs border-l-2 border-gold/40 pl-3">Stored now, but won&apos;t drive the actual &lt;head&gt; tags until the SSR migration. Edit freely — values will be picked up when that lands.</p>
           <TextField label="Meta title" value={form.metaTitle} onChange={(v) => update("metaTitle", v)} hint="Browser tab title + search result heading." />
           <TextareaField label="Meta description" rows={3} value={form.metaDescription} onChange={(v) => update("metaDescription", v)} hint="Search result snippet. Aim for 150-160 characters." />
-          <TextField label="OG image URL" type="url" value={form.ogImageUrl} onChange={(v) => update("ogImageUrl", v)} placeholder="https://..." hint="1200x630 image shown when the site is shared on WhatsApp / X / LinkedIn." />
+          <ImageUpload category="settings" label="OG image" value={form.ogImageUrl} onChange={(v) => update("ogImageUrl", v)} />
+          <p className="text-taupe text-xs">1200×630 image shown when the site is shared on WhatsApp / X / LinkedIn.</p>
         </SectionCard>
 
         <SectionCard eyebrow="Notice" title="Announcement bar">
