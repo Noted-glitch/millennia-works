@@ -1,15 +1,18 @@
 import type { MetadataRoute } from "next";
 import { getPublishedPostsServer } from "@/lib/server/blog";
 import { getAllServicesServer } from "@/lib/server/services";
+import { getAllProjectsServer } from "@/lib/server/portfolio";
+import { slugify } from "@/lib/slug";
 
 export const revalidate = 3600;
 
 const BASE_URL = "https://millenniaworks.com";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [posts, services] = await Promise.all([
+  const [posts, services, projects] = await Promise.all([
     getPublishedPostsServer(),
     getAllServicesServer(),
+    getAllProjectsServer(),
   ]);
 
   const now = new Date();
@@ -43,5 +46,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8,
   }));
 
-  return [...staticEntries, ...postEntries, ...serviceEntries];
+  const projectEntries: MetadataRoute.Sitemap = projects.map((p) => ({
+    url: `${BASE_URL}/work/${slugify(p.title)}`,
+    lastModified: p.updatedAt ? new Date(p.updatedAt) : now,
+    changeFrequency: "monthly" as const,
+    priority: 0.7,
+  }));
+
+  return [...staticEntries, ...postEntries, ...serviceEntries, ...projectEntries];
 }
