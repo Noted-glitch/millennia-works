@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { auth } from "@/lib/firebase";
 
 export type UploadCategory = "portfolio" | "blog" | "settings";
@@ -29,8 +29,20 @@ export default function ImageUpload({
   const [dragging, setDragging] = useState(false);
   const [progress, setProgress] = useState<number | null>(null);
   const [error, setError] = useState("");
+  // Local blob URL so the preview is visible immediately on file selection,
+  // before the CDN URL comes back from the server.
+  const [localPreview, setLocalPreview] = useState<string | null>(null);
 
   const uploading = progress !== null;
+  // Show local blob while uploading; fall back to the CDN URL from the parent.
+  const previewSrc = localPreview || value || null;
+
+  // Revoke the blob URL when the component unmounts to avoid memory leaks.
+  useEffect(() => {
+    return () => {
+      if (localPreview) URL.revokeObjectURL(localPreview);
+    };
+  }, [localPreview]);
 
   async function upload(file: File) {
     setError("");
@@ -58,6 +70,10 @@ export default function ImageUpload({
       setError("Could not verify your session. Please try again.");
       return;
     }
+
+    // Show a local preview immediately so the user sees the image right away.
+    const blobUrl = URL.createObjectURL(file);
+    setLocalPreview(blobUrl);
 
     const formData = new FormData();
     formData.append("file", file);
@@ -94,9 +110,14 @@ export default function ImageUpload({
         xhr.send(formData);
       });
 
+      // Hand the CDN URL to the parent, then drop the local blob.
+      URL.revokeObjectURL(blobUrl);
+      setLocalPreview(null);
       onChange(url);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Upload failed.");
+      URL.revokeObjectURL(blobUrl);
+      setLocalPreview(null);
     } finally {
       setProgress(null);
     }
@@ -131,81 +152,80 @@ export default function ImageUpload({
         }}
       />
 
-      {value ? (
-        // Preview of the current image with a Remove action.
+      {previewSrc ? (
+        // Preview: shows the local blob immediately on selection, then the CDN URL once uploaded.
         <div className="border border-gold/30">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={value}
-            alt="Uploaded preview"
-            className="w-full max-h-64 object-contain bg-navy"
-          />
-          <div className="flex items-center justify-between gap-3 px-4 py-3 border-t border-gold/20">
-            <p className="text-taupe text-xs truncate font-mono">{value}</p>
-            <div className="flex gap-2 shrink-0">
-              <button
-                type="button"
-                onClick={() => inputRef.current?.click()}
-                disabled={uploading}
-                className="border border-gold/30 text-gold text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] px-4 py-2 rounded hover:bg-gold/10 transition-colors disabled:opacity-50"
-              >
-                Replace
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setError("");
-                  onChange("");
-                }}
-                disabled={uploading}
-                className="border border-red-400/30 text-red-400 text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] px-4 py-2 rounded hover:bg-red-400/10 transition-colors disabled:opacity-50"
-              >
-                Remove
-              </button>
-            </div>
+          <div className="relative">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={previewSrc}
+              alt="Uploaded preview"
+              className="w-full max-h-64 object-contain bg-navy"
+            />
+            {uploading && (
+              <div className="absolute inset-0 bg-navy/75 flex flex-col items-center justify-center gap-2">
+                <p className="text-pearl text-sm">Uploading… {progress}%</p>
+                <div className="w-2/3 h-1.5 bg-gold/15 rounded overflow-hidden">
+                  <div
+                    className="h-full bg-gold transition-all duration-150"
+                    style={{ width: `${progress ?? 0}%` }}
+                  />
+                </div>
+              </div>
+            )}
           </div>
+          {!uploading && (
+            <div className="flex items-center justify-between gap-3 px-4 py-3 border-t border-gold/20">
+              <p className="text-taupe text-xs truncate font-mono">{value}</p>
+              <div className="flex gap-2 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => inputRef.current?.click()}
+                  className="border border-gold/30 text-gold text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] px-4 py-2 rounded hover:bg-gold/10 transition-colors"
+                >
+                  Replace
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setError("");
+                    onChange("");
+                  }}
+                  className="border border-red-400/30 text-red-400 text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] px-4 py-2 rounded hover:bg-red-400/10 transition-colors"
+                >
+                  Remove
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       ) : (
         // Drop zone / click-to-select.
         <div
           role="button"
           tabIndex={0}
-          onClick={() => !uploading && inputRef.current?.click()}
+          onClick={() => inputRef.current?.click()}
           onKeyDown={(e) => {
-            if ((e.key === "Enter" || e.key === " ") && !uploading) {
+            if (e.key === "Enter" || e.key === " ") {
               e.preventDefault();
               inputRef.current?.click();
             }
           }}
           onDragOver={(e) => {
             e.preventDefault();
-            if (!uploading) setDragging(true);
+            setDragging(true);
           }}
           onDragLeave={() => setDragging(false)}
           onDrop={handleDrop}
           className={`flex flex-col items-center justify-center gap-2 px-6 py-10 border border-dashed rounded cursor-pointer transition-colors text-center ${
             dragging ? "border-gold bg-gold/10" : "border-gold/30 hover:border-gold/60"
-          } ${uploading ? "cursor-wait opacity-80" : ""}`}
+          }`}
         >
-          {uploading ? (
-            <>
-              <p className="text-pearl text-sm">Uploading… {progress}%</p>
-              <div className="w-full max-w-xs h-1.5 bg-gold/15 rounded overflow-hidden">
-                <div
-                  className="h-full bg-gold transition-all duration-150"
-                  style={{ width: `${progress ?? 0}%` }}
-                />
-              </div>
-            </>
-          ) : (
-            <>
-              <p className="text-champagne/80 text-sm">
-                Drag &amp; drop an image, or{" "}
-                <span className="text-gold underline underline-offset-2">browse</span>
-              </p>
-              <p className="text-taupe text-xs">JPEG, PNG, WebP, or GIF · up to 5 MB</p>
-            </>
-          )}
+          <p className="text-champagne/80 text-sm">
+            Drag &amp; drop an image, or{" "}
+            <span className="text-gold underline underline-offset-2">browse</span>
+          </p>
+          <p className="text-taupe text-xs">JPEG, PNG, WebP, or GIF · up to 5 MB</p>
         </div>
       )}
 

@@ -214,7 +214,7 @@ export default function SettingsManager() {
         </SectionCard>
 
         <SectionCard eyebrow="SEO" title="SEO & social sharing">
-          <p className="text-taupe text-xs border-l-2 border-gold/40 pl-3">Stored now, but won&apos;t drive the actual &lt;head&gt; tags until the SSR migration. Edit freely — values will be picked up when that lands.</p>
+          <p className="text-taupe text-xs border-l-2 border-gold/40 pl-3">These values drive the live &lt;head&gt; tags on every page via server-side rendering. Changes take effect on next page load.</p>
           <TextField label="Meta title" value={form.metaTitle} onChange={(v) => update("metaTitle", v)} hint="Browser tab title + search result heading." />
           <TextareaField label="Meta description" rows={3} value={form.metaDescription} onChange={(v) => update("metaDescription", v)} hint="Search result snippet. Aim for 150-160 characters." />
           <ImageUpload category="settings" label="OG image" value={form.ogImageUrl} onChange={(v) => update("ogImageUrl", v)} />
