@@ -16,10 +16,16 @@ function formatDate(ms?: number) {
   return new Date(ms).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" });
 }
 
+function readingTime(content: string): number {
+  const words = content.trim().split(/\s+/).length;
+  return Math.max(1, Math.round(words / 200));
+}
+
 export function BlogPostContent({ slug }: { slug: string }) {
   const [post, setPost] = useState<BlogPost | null>(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
+  const [scrollProgress, setScrollProgress] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
@@ -45,13 +51,45 @@ export function BlogPostContent({ slug }: { slug: string }) {
     };
   }, [slug]);
 
+  useEffect(() => {
+    function handleScroll() {
+      const el = document.documentElement;
+      const progress = el.scrollTop / (el.scrollHeight - el.clientHeight);
+      setScrollProgress(Math.min(1, Math.max(0, progress)));
+    }
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
     <main className="min-h-screen bg-navy text-pearl">
       <SiteNav activeLink="blog" />
 
+      {/* Reading progress bar — fixed just below the nav */}
+      {!loading && post && (
+        <div className="fixed top-[80px] left-0 right-0 z-40 h-px bg-gold/10">
+          <div
+            className="h-full bg-gold"
+            style={{ width: `${scrollProgress * 100}%`, transition: "width 0.1s linear" }}
+          />
+        </div>
+      )}
+
       {loading ? (
-        <div className="min-h-screen flex items-center justify-center">
-          <p className="text-taupe text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)]">Loading...</p>
+        <div className="pt-32 pb-20 px-6">
+          <div className="max-w-3xl mx-auto text-center mb-14 space-y-5">
+            <div className="skeleton h-3 w-20 mx-auto rounded" />
+            <div className="skeleton h-12 w-3/4 mx-auto rounded" />
+            <div className="skeleton h-3 w-56 mx-auto rounded" />
+          </div>
+          <div className="max-w-5xl mx-auto mb-16">
+            <div className="aspect-[16/9] skeleton" />
+          </div>
+          <div className="max-w-2xl mx-auto space-y-3">
+            {Array.from({ length: 10 }).map((_, i) => (
+              <div key={i} className={`skeleton h-4 rounded ${i % 5 === 4 ? "w-2/3" : "w-full"}`} />
+            ))}
+          </div>
         </div>
       ) : notFound || !post ? (
         <section className="min-h-screen flex items-center justify-center px-6 pt-20">
@@ -79,9 +117,11 @@ export function BlogPostContent({ slug }: { slug: string }) {
             >
               <p className="text-xs tracking-[0.4em] uppercase text-gold mb-6 font-[family-name:var(--font-montserrat)]">{post.category}</p>
               <h1 className="font-[family-name:var(--font-playfair)] text-4xl md:text-6xl font-normal leading-tight mb-8">{post.title}</h1>
-              <div className="flex items-center justify-center gap-4 text-taupe text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)]">
+              <div className="flex items-center justify-center gap-3 text-taupe text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] flex-wrap">
                 <span>{post.author}</span>
                 {post.publishedAt && <><span>·</span><span>{formatDate(post.publishedAt)}</span></>}
+                <span>·</span>
+                <span>{readingTime(post.content)} min read</span>
               </div>
             </motion.header>
 

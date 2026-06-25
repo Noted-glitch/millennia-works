@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { getFeaturedProjects } from "@/lib/portfolio";
 import { getFeaturedTestimonials } from "@/lib/testimonials";
 import { getFeaturedServices } from "@/lib/services";
@@ -253,10 +253,10 @@ export default function Home() {
       <section id="about" className="py-24 px-6 border-t border-gold/10">
         <div className="max-w-4xl mx-auto text-center">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, scale: 0.97 }}
+            whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: 0.9, ease: "easeOut" }}
           >
             <p className="text-xs tracking-[0.4em] uppercase text-gold mb-6 font-[family-name:var(--font-montserrat)]">{settings.aboutEyebrow}</p>
             <h2 className="font-[family-name:var(--font-playfair)] text-4xl md:text-5xl font-normal mb-8 leading-tight">
@@ -273,10 +273,10 @@ export default function Home() {
       <section id="work" className="py-24 px-6 border-t border-gold/10">
         <div className="max-w-7xl mx-auto">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
             className="text-center mb-16"
           >
             <p className="text-xs tracking-[0.4em] uppercase text-gold mb-4 font-[family-name:var(--font-montserrat)]">Selected work</p>
@@ -337,10 +337,10 @@ export default function Home() {
       <section className="py-24 px-6 border-t border-gold/10 bg-graphite/30">
         <div className="max-w-5xl mx-auto">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
             className="text-center mb-16"
           >
             <p className="text-xs tracking-[0.4em] uppercase text-gold mb-4 font-[family-name:var(--font-montserrat)]">In their words</p>
@@ -373,13 +373,15 @@ export default function Home() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.6, delay: i * 0.15 }}
-                  className="border border-gold/20 p-8 md:p-10"
+                  className="relative bg-graphite/20 border border-gold/20 p-8 md:p-10 overflow-hidden"
                 >
-                  <p className="text-gold text-3xl font-[family-name:var(--font-playfair)] mb-4">&ldquo;</p>
-                  <p className="text-champagne text-base md:text-lg leading-relaxed italic font-[family-name:var(--font-playfair)] mb-6">{t.quote}</p>
-                  <div>
-                    <p className="text-pearl text-sm font-medium">{t.name}</p>
-                    <p className="text-taupe text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] mt-1">{t.role}</p>
+                  <span className="absolute top-4 right-6 text-gold/10 font-[family-name:var(--font-playfair)] leading-none select-none pointer-events-none" style={{ fontSize: "8rem" }}>&ldquo;</span>
+                  <div className="relative">
+                    <p className="text-champagne text-base md:text-lg leading-relaxed italic font-[family-name:var(--font-playfair)] mb-8">{t.quote}</p>
+                    <div className="border-t border-gold/20 pt-5">
+                      <p className="text-pearl text-sm font-medium">{t.name}</p>
+                      <p className="text-taupe text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] mt-1">{t.role}</p>
+                    </div>
                   </div>
                 </motion.div>
               ))}
@@ -393,21 +395,21 @@ export default function Home() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.6, delay: i * 0.15 }}
-                  className="border border-gold/20 p-8 md:p-10"
+                  className="relative bg-graphite/20 border border-gold/20 p-8 md:p-10 overflow-hidden"
                 >
-                  <div className="flex items-start gap-4 mb-4">
+                  <span className="absolute top-4 right-6 text-gold/10 font-[family-name:var(--font-playfair)] leading-none select-none pointer-events-none" style={{ fontSize: "8rem" }}>&ldquo;</span>
+                  <div className="relative">
                     {t.photoUrl && (
-                      <div className="w-14 h-14 rounded-full overflow-hidden bg-graphite flex-shrink-0">
+                      <div className="w-12 h-12 rounded-full overflow-hidden bg-graphite mb-6 flex-shrink-0">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img src={t.photoUrl} alt={t.clientName} className="w-full h-full object-cover" />
                       </div>
                     )}
-                    <p className="text-gold text-3xl font-[family-name:var(--font-playfair)]">&ldquo;</p>
-                  </div>
-                  <p className="text-champagne text-base md:text-lg leading-relaxed italic font-[family-name:var(--font-playfair)] mb-6">{t.quote}</p>
-                  <div>
-                    <p className="text-pearl text-sm font-medium">{t.clientName}</p>
-                    <p className="text-taupe text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] mt-1">{t.role}{t.role && t.company && " · "}{t.company}</p>
+                    <p className="text-champagne text-base md:text-lg leading-relaxed italic font-[family-name:var(--font-playfair)] mb-8">{t.quote}</p>
+                    <div className="border-t border-gold/20 pt-5">
+                      <p className="text-pearl text-sm font-medium">{t.clientName}</p>
+                      <p className="text-taupe text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] mt-1">{t.role}{t.role && t.company && " · "}{t.company}</p>
+                    </div>
                   </div>
                 </motion.div>
               ))}
@@ -434,14 +436,50 @@ export default function Home() {
             </p>
           </div>
 
+          <AnimatePresence mode="wait">
           {inquirySent ? (
-            <div className="border border-gold/30 bg-gold/5 p-8 md:p-10 text-center">
-              <p className="text-gold text-3xl font-[family-name:var(--font-playfair)] mb-4">Thank you.</p>
-              <p className="text-champagne/80 text-base mb-6">Got it — {settings.responseTimePromise.toLowerCase()}</p>
-              <button onClick={() => setInquirySent(false)} className="text-gold text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] border-b border-gold pb-1 hover:text-pearl hover:border-pearl transition-colors">Send another</button>
-            </div>
+            <motion.div
+              key="success"
+              initial={{ opacity: 0, scale: 0.96 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
+              className="border border-gold/30 bg-gold/5 p-10 md:p-14 text-center"
+            >
+              <motion.p
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.15, duration: 0.5 }}
+                className="text-gold text-5xl font-[family-name:var(--font-playfair)] mb-4"
+              >✦</motion.p>
+              <motion.p
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.25, duration: 0.5 }}
+                className="font-[family-name:var(--font-playfair)] text-3xl text-pearl mb-3"
+              >Thank you.</motion.p>
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.4, duration: 0.5 }}
+                className="text-champagne/70 text-base mb-8"
+              >Got it — {settings.responseTimePromise.toLowerCase()}</motion.p>
+              <motion.button
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.55, duration: 0.4 }}
+                onClick={() => setInquirySent(false)}
+                className="text-gold text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] border-b border-gold pb-1 hover:text-pearl hover:border-pearl transition-colors"
+              >Send another</motion.button>
+            </motion.div>
           ) : (
-            <form onSubmit={handleInquirySubmit} className="border border-gold/20 p-6 md:p-8 space-y-5">
+            <motion.form
+              key="form"
+              initial={{ opacity: 1 }}
+              exit={{ opacity: 0, scale: 0.98 }}
+              transition={{ duration: 0.2 }}
+              onSubmit={handleInquirySubmit}
+              className="border border-gold/20 p-6 md:p-8 space-y-5"
+            >
               <div className="grid md:grid-cols-2 gap-5">
                 <div>
                   <label className="block text-xs tracking-widest uppercase text-taupe mb-2 font-[family-name:var(--font-montserrat)]">Name *</label>
@@ -482,8 +520,9 @@ export default function Home() {
                 </button>
                 <a href={`mailto:${settings.contactEmail}`} className="text-taupe text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] hover:text-gold transition-colors">or email {settings.contactEmail}</a>
               </div>
-            </form>
+            </motion.form>
           )}
+          </AnimatePresence>
 
           {(settings.whatsappNumber || settings.bookingLink) && !inquirySent && (
             <div className="flex justify-center gap-3 flex-wrap mt-6">
