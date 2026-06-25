@@ -8,6 +8,7 @@ import { getFeaturedServices } from "@/lib/services";
 import { submitInquiry } from "@/lib/inquiries";
 import { useSettings } from "@/lib/settings-context";
 import { PROJECT_CATEGORIES, type Project, type Testimonial, type Service } from "@/lib/types";
+import { slugify } from "@/lib/slug";
 import { SiteNav } from "@/components/SiteNav";
 import { SiteFooter } from "@/components/SiteFooter";
 
@@ -304,8 +305,17 @@ export default function Home() {
 ) : (
   <div className="grid md:grid-cols-3 gap-6">
     {featuredProjects.map((p, i) => {
-      const card = (
-        <div className="aspect-[4/5] bg-graphite border border-gold/10 relative overflow-hidden hover:border-gold/40 transition-colors cursor-pointer group">
+      return (
+        <motion.a
+          key={p.id}
+          href={`/work/${slugify(p.title)}`}
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          whileHover={{ y: -6, transition: { duration: 0.25, ease: "easeOut" } }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: i * 0.15 }}
+          className="aspect-[4/5] bg-graphite border border-gold/10 relative overflow-hidden hover:border-gold/40 transition-colors cursor-pointer group block"
+        >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={p.imageUrl} alt={p.title} className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-opacity" />
           <div className="absolute inset-0 bg-gradient-to-t from-navy via-navy/50 to-transparent" />
@@ -314,19 +324,7 @@ export default function Home() {
             <h3 className="font-[family-name:var(--font-playfair)] text-2xl text-pearl mb-1">{p.title}</h3>
             {p.client && <p className="text-taupe text-xs">{p.client} · {p.year}</p>}
           </div>
-        </div>
-      );
-      return (
-        <motion.div
-          key={p.id}
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          whileHover={{ y: -6, transition: { duration: 0.25, ease: "easeOut" } }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: i * 0.15 }}
-        >
-          {p.projectUrl ? <a href={p.projectUrl} target="_blank" rel="noopener noreferrer">{card}</a> : card}
-        </motion.div>
+        </motion.a>
       );
     })}
   </div>
