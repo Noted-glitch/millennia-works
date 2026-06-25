@@ -188,6 +188,7 @@ export default function PortfolioManager() {
             <ImageUpload
               category="portfolio"
               label="Project image *"
+              hint="4:3 ratio recommended · e.g. 1200 × 900"
               value={form.imageUrl}
               onChange={(url) => setForm({ ...form, imageUrl: url })}
             />

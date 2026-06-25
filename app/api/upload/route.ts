@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
+import sharp from "sharp";
 import { getR2 } from "@/lib/r2";
 import { requireAdmin } from "@/lib/server/auth";
 import { slugify } from "@/lib/slug";
@@ -102,22 +103,40 @@ export async function POST(request: Request) {
     );
   }
 
-  // 4. Build a unique, collision-resistant key: {category}/{timestamp}-{slug}.{ext}
+  // 4. Optimise: convert to WebP (max 2000px, quality 85). GIFs are stored as-is.
+  const raw = Buffer.from(await file.arrayBuffer());
+  let body: Buffer;
+  let contentType: string;
+  let finalExt: string;
+
+  if (file.type === "image/gif") {
+    body = raw;
+    contentType = "image/gif";
+    finalExt = "gif";
+  } else {
+    body = await sharp(raw)
+      .rotate()                                                      // honour EXIF orientation
+      .resize({ width: 2000, height: 2000, fit: "inside", withoutEnlargement: true })
+      .webp({ quality: 85 })
+      .toBuffer();
+    contentType = "image/webp";
+    finalExt = "webp";
+  }
+
+  // 5. Build a unique key and upload to R2.
   const baseName = file.name.replace(/\.[^./\\]+$/, "");
   const slug = slugify(baseName) || "image";
-  const key = `${category}/${Date.now()}-${slug}.${ext}`;
+  const key = `${category}/${Date.now()}-${slug}.${finalExt}`;
 
-  // 5. Upload to R2.
   try {
     const { client, bucket, publicBaseUrl } = getR2();
-    const body = Buffer.from(await file.arrayBuffer());
 
     await client.send(
       new PutObjectCommand({
         Bucket: bucket,
         Key: key,
         Body: body,
-        ContentType: file.type,
+        ContentType: contentType,
         CacheControl: "public, max-age=31536000",
       }),
     );

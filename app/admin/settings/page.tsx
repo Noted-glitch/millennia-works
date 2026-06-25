@@ -177,12 +177,12 @@ export default function SettingsManager() {
           {form.heroMediaType === "video" && (
             <>
               <TextField label="Video URL" type="url" value={form.heroVideoUrl} onChange={(v) => update("heroVideoUrl", v)} placeholder="https://... (self-hosted MP4)" hint="MP4, H.264 encoded. Hosted on R2/Cloudinary/Vercel Blob. Skipped on mobile in favor of the poster." />
-              <ImageUpload category="settings" label="Video poster" value={form.heroVideoPoster} onChange={(v) => update("heroVideoPoster", v)} />
+              <ImageUpload category="settings" label="Video poster" hint="16:9 ratio · e.g. 1920 × 1080" value={form.heroVideoPoster} onChange={(v) => update("heroVideoPoster", v)} />
             </>
           )}
 
           {form.heroMediaType === "image" && (
-            <ImageUpload category="settings" label="Hero image" value={form.heroImageUrl} onChange={(v) => update("heroImageUrl", v)} />
+            <ImageUpload category="settings" label="Hero image" hint="16:9 ratio · e.g. 1920 × 1080" value={form.heroImageUrl} onChange={(v) => update("heroImageUrl", v)} />
           )}
 
           {form.heroMediaType !== "color" && (

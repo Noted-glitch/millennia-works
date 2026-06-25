@@ -223,6 +223,7 @@ export default function BlogManager() {
               <ImageUpload
                 category="blog"
                 label="Cover image"
+                hint="16:10 ratio recommended · e.g. 1600 × 1000"
                 value={form.coverImageUrl}
                 onChange={(url) => setForm({ ...form, coverImageUrl: url })}
               />

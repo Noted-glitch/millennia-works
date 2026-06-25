@@ -13,6 +13,8 @@ interface ImageUploadProps {
   onChange: (url: string) => void;
   /** Optional field label shown above the control. */
   label?: string;
+  /** Optional dimension/format hint shown below the drop zone. */
+  hint?: string;
 }
 
 const ACCEPTED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
@@ -23,6 +25,7 @@ export default function ImageUpload({
   value,
   onChange,
   label = "Image",
+  hint,
 }: ImageUploadProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const inputId = useId();
@@ -237,7 +240,8 @@ export default function ImageUpload({
             Drag &amp; drop an image, or{" "}
             <span className="text-gold underline underline-offset-2">browse</span>
           </p>
-          <p className="text-taupe text-xs">JPEG, PNG, WebP, or GIF · up to 5 MB</p>
+          <p className="text-taupe text-xs">JPEG, PNG, WebP, or GIF · up to 5 MB · saved as WebP</p>
+          {hint && <p className="text-taupe text-xs">{hint}</p>}
         </div>
       )}
 
