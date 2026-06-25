@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { PutObjectCommand } from "@aws-sdk/client-s3";
+import { PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 import { getR2 } from "@/lib/r2";
 import { requireAdmin } from "@/lib/server/auth";
 import { slugify } from "@/lib/slug";
@@ -18,6 +18,46 @@ const ALLOWED_TYPES: Record<string, string> = {
 };
 
 const CATEGORIES = new Set(["portfolio", "blog", "settings"]);
+
+export async function DELETE(request: Request) {
+  const auth = await requireAdmin(request);
+  if (!auth.ok) {
+    return NextResponse.json({ error: auth.error }, { status: auth.status });
+  }
+
+  let body: { url?: unknown };
+  try {
+    body = await request.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid request body." }, { status: 400 });
+  }
+
+  const url = body.url;
+  if (typeof url !== "string" || !url) {
+    return NextResponse.json({ error: "No URL provided." }, { status: 400 });
+  }
+
+  const { client, bucket, publicBaseUrl } = getR2();
+
+  if (!url.startsWith(`${publicBaseUrl}/`)) {
+    return NextResponse.json({ error: "URL is not from this CDN." }, { status: 400 });
+  }
+
+  const key = url.slice(publicBaseUrl.length + 1);
+
+  // Only allow deletion within known upload categories.
+  if (!["portfolio/", "blog/", "settings/"].some((p) => key.startsWith(p))) {
+    return NextResponse.json({ error: "Cannot delete this object." }, { status: 403 });
+  }
+
+  try {
+    await client.send(new DeleteObjectCommand({ Bucket: bucket, Key: key }));
+    return NextResponse.json({ ok: true });
+  } catch (err) {
+    console.error("R2 delete failed —", err);
+    return NextResponse.json({ error: "Delete failed." }, { status: 502 });
+  }
+}
 
 export async function POST(request: Request) {
   // 1. Auth — must be a signed-in admin.

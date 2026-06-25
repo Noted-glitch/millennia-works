@@ -34,8 +34,22 @@ export default function ImageUpload({
   const [localPreview, setLocalPreview] = useState<string | null>(null);
 
   const uploading = progress !== null;
-  // Show local blob while uploading; fall back to the CDN URL from the parent.
   const previewSrc = localPreview || value || null;
+
+  async function deleteFromR2(url: string) {
+    const user = auth.currentUser;
+    if (!user || !url) return;
+    try {
+      const token = await user.getIdToken();
+      await fetch("/api/upload", {
+        method: "DELETE",
+        headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ url }),
+      });
+    } catch {
+      // Silent — orphaned objects are not critical
+    }
+  }
 
   // Revoke the blob URL when the component unmounts to avoid memory leaks.
   useEffect(() => {
@@ -46,8 +60,8 @@ export default function ImageUpload({
 
   async function upload(file: File) {
     setError("");
+    const previousUrl = value; // capture before anything changes — used to delete old R2 object on replace
 
-    // Mirror server-side validation for fast feedback.
     if (!ACCEPTED_TYPES.includes(file.type)) {
       setError("Unsupported file type. Use JPEG, PNG, WebP, or GIF.");
       return;
@@ -71,7 +85,6 @@ export default function ImageUpload({
       return;
     }
 
-    // Show a local preview immediately so the user sees the image right away.
     const blobUrl = URL.createObjectURL(file);
     setLocalPreview(blobUrl);
 
@@ -94,11 +107,7 @@ export default function ImageUpload({
 
         xhr.onload = () => {
           let body: { url?: string; error?: string } = {};
-          try {
-            body = JSON.parse(xhr.responseText);
-          } catch {
-            /* non-JSON response */
-          }
+          try { body = JSON.parse(xhr.responseText); } catch { /* non-JSON */ }
           if (xhr.status >= 200 && xhr.status < 300 && body.url) {
             resolve(body.url);
           } else {
@@ -110,10 +119,11 @@ export default function ImageUpload({
         xhr.send(formData);
       });
 
-      // Hand the CDN URL to the parent, then drop the local blob.
       URL.revokeObjectURL(blobUrl);
       setLocalPreview(null);
       onChange(url);
+      // Delete the old object only after the new one is confirmed saved.
+      if (previousUrl) deleteFromR2(previousUrl);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Upload failed.");
       URL.revokeObjectURL(blobUrl);
@@ -189,7 +199,9 @@ export default function ImageUpload({
                   type="button"
                   onClick={() => {
                     setError("");
+                    const urlToDelete = value;
                     onChange("");
+                    if (urlToDelete) deleteFromR2(urlToDelete);
                   }}
                   className="border border-red-400/30 text-red-400 text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] px-4 py-2 rounded hover:bg-red-400/10 transition-colors"
                 >
