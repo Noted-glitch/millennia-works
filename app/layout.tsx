@@ -56,16 +56,51 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const settings = await getSettingsServer();
+
+  const sameAs = settings.socialLinks
+    .map((l) => l.url)
+    .filter(Boolean);
+
+  const organizationSchema = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: "Millennia Works",
+    url: "https://millenniaworks.com",
+    logo: {
+      "@type": "ImageObject",
+      url: "https://millenniaworks.com/brand/logo-icon-gold.png",
+    },
+    description: settings.metaDescription || settings.tagline,
+    slogan: settings.tagline,
+    ...(settings.contactEmail && { email: settings.contactEmail }),
+    ...(sameAs.length > 0 && { sameAs }),
+  };
+
+  const websiteSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "Millennia Works",
+    url: "https://millenniaworks.com",
+    description: settings.metaDescription || settings.tagline,
+  };
+
   return (
     <html lang="en">
       <body
         className={`${playfair.variable} ${montserrat.variable} ${inter.variable} antialiased`}
       >
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify([organizationSchema, websiteSchema]).replace(/</g, "\\u003c"),
+          }}
+        />
         <SettingsProvider>{children}</SettingsProvider>
         <Analytics />
       </body>

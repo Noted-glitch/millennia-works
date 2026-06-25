@@ -45,5 +45,53 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  return <BlogPostContent slug={slug} />;
+  const post = await getPostBySlugServer(slug);
+
+  const jsonLd = post
+    ? {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        headline: post.title,
+        description: post.excerpt,
+        ...(post.coverImageUrl && { image: post.coverImageUrl }),
+        datePublished: post.publishedAt ? new Date(post.publishedAt).toISOString() : undefined,
+        dateModified: post.updatedAt
+          ? new Date(post.updatedAt).toISOString()
+          : post.publishedAt
+          ? new Date(post.publishedAt).toISOString()
+          : undefined,
+        author: {
+          "@type": "Organization",
+          name: post.author || "Millennia Works",
+          url: "https://millenniaworks.com",
+        },
+        publisher: {
+          "@type": "Organization",
+          name: "Millennia Works",
+          url: "https://millenniaworks.com",
+          logo: {
+            "@type": "ImageObject",
+            url: "https://millenniaworks.com/brand/logo-icon-gold.png",
+          },
+        },
+        mainEntityOfPage: {
+          "@type": "WebPage",
+          "@id": `https://millenniaworks.com/blog/${post.slug}`,
+        },
+      }
+    : null;
+
+  return (
+    <>
+      {jsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
+          }}
+        />
+      )}
+      <BlogPostContent slug={slug} />
+    </>
+  );
 }
