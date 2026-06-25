@@ -36,3 +36,19 @@ body {
   background: var(--color-gold);
   color: var(--color-navy);
 }
+
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--color-graphite) 25%,
+    #3a3a3a 50%,
+    var(--color-graphite) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+}

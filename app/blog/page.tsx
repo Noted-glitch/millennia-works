@@ -54,7 +54,21 @@ export default function BlogIndex() {
       <section className="py-16 md:py-20 px-6">
         <div className="max-w-6xl mx-auto">
           {loading ? (
-            <p className="text-taupe text-sm text-center py-12">Loading posts...</p>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="flex flex-col border border-gold/10">
+                  <div className="aspect-[16/10] skeleton" />
+                  <div className="p-6 space-y-3">
+                    <div className="skeleton h-2.5 w-20 rounded" />
+                    <div className="skeleton h-7 w-4/5 rounded" />
+                    <div className="space-y-2">
+                      <div className="skeleton h-3 w-full rounded" />
+                      <div className="skeleton h-3 w-5/6 rounded" />
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           ) : posts.length === 0 ? (
             <div className="border border-gold/20 p-12 text-center max-w-2xl mx-auto">
               <p className="text-champagne/70 mb-2">No posts yet.</p>
@@ -68,6 +82,7 @@ export default function BlogIndex() {
                   href={`/blog/${p.slug}`}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
+                  whileHover={{ y: -6, transition: { duration: 0.25, ease: "easeOut" } }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.6, delay: i * 0.1 }}
                   className="group flex flex-col border border-gold/10 hover:border-gold/40 transition-colors"

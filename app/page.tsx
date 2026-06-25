@@ -196,7 +196,18 @@ export default function Home() {
           </motion.div>
 
           {servicesLoading ? (
-            <p className="text-taupe text-sm text-center py-12">Loading services...</p>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-px bg-gold/10">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="bg-navy p-8 md:p-10 space-y-4">
+                  <div className="skeleton h-3 w-20 rounded" />
+                  <div className="skeleton h-7 w-3/4 rounded" />
+                  <div className="space-y-2">
+                    <div className="skeleton h-3 w-full rounded" />
+                    <div className="skeleton h-3 w-5/6 rounded" />
+                  </div>
+                </div>
+              ))}
+            </div>
           ) : services.length === 0 ? (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-px bg-gold/10">
               {servicePlaceholders.map((service, i) => (
@@ -276,7 +287,11 @@ export default function Home() {
           </motion.div>
 
           {projectsLoading ? (
-  <p className="text-taupe text-sm text-center py-12">Loading work...</p>
+  <div className="grid md:grid-cols-3 gap-6">
+    {Array.from({ length: 3 }).map((_, i) => (
+      <div key={i} className="aspect-[4/5] skeleton rounded" />
+    ))}
+  </div>
 ) : featuredProjects.length === 0 ? (
   <div className="grid md:grid-cols-3 gap-6">
     {[1, 2, 3].map((i) => (
@@ -306,6 +321,7 @@ export default function Home() {
           key={p.id}
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
+          whileHover={{ y: -6, transition: { duration: 0.25, ease: "easeOut" } }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: i * 0.15 }}
         >
@@ -332,7 +348,22 @@ export default function Home() {
           </motion.div>
 
           {testimonialsLoading ? (
-            <p className="text-taupe text-sm text-center py-12">Loading testimonials...</p>
+            <div className="grid md:grid-cols-2 gap-8">
+              {Array.from({ length: 2 }).map((_, i) => (
+                <div key={i} className="border border-gold/10 p-8 md:p-10 space-y-4">
+                  <div className="skeleton h-8 w-8 rounded" />
+                  <div className="space-y-2">
+                    <div className="skeleton h-4 w-full rounded" />
+                    <div className="skeleton h-4 w-full rounded" />
+                    <div className="skeleton h-4 w-3/4 rounded" />
+                  </div>
+                  <div className="space-y-1 pt-2">
+                    <div className="skeleton h-3 w-32 rounded" />
+                    <div className="skeleton h-3 w-24 rounded" />
+                  </div>
+                </div>
+              ))}
+            </div>
           ) : featuredTestimonials.length === 0 ? (
             <div className="grid md:grid-cols-2 gap-8">
               {testimonialPlaceholders.map((t, i) => (
