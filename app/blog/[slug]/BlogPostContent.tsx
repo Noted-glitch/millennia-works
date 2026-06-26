@@ -6,7 +6,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "@/lib/firebase";
-import { getPostBySlug } from "@/lib/blog";
+import { getPostBySlug, getPublishedPosts } from "@/lib/blog";
 import { SiteNav } from "@/components/SiteNav";
 import { SiteFooter } from "@/components/SiteFooter";
 import type { BlogPost } from "@/lib/types";
@@ -22,9 +22,10 @@ function readingTime(content: string): number {
 }
 
 export function BlogPostContent({ slug }: { slug: string }) {
-  const [post, setPost] = useState<BlogPost | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [notFound, setNotFound] = useState(false);
+  const [post, setPost]           = useState<BlogPost | null>(null);
+  const [related, setRelated]     = useState<BlogPost[]>([]);
+  const [loading, setLoading]     = useState(true);
+  const [notFound, setNotFound]   = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
 
   useEffect(() => {
@@ -37,6 +38,12 @@ export function BlogPostContent({ slug }: { slug: string }) {
           setNotFound(true);
         } else {
           setPost(result);
+          const all = await getPublishedPosts();
+          if (!cancelled) {
+            setRelated(
+              all.filter((p) => p.slug !== slug && p.category === result.category).slice(0, 3)
+            );
+          }
         }
       } catch (err) {
         console.error("Failed to load post:", err);
@@ -173,6 +180,55 @@ export function BlogPostContent({ slug }: { slug: string }) {
               </div>
             </motion.div>
           </article>
+
+          {/* ── Related posts ── */}
+          {related.length > 0 && (
+            <section className="py-20 px-6 border-t border-gold/10">
+              <div className="max-w-5xl mx-auto">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.8 }}
+                  className="mb-10"
+                >
+                  <p className="text-xs tracking-[0.4em] uppercase text-gold mb-2 font-[family-name:var(--font-montserrat)]">Continue reading</p>
+                  <h2 className="font-[family-name:var(--font-playfair)] text-3xl font-normal">More from the <span className="text-gold italic">studio.</span></h2>
+                </motion.div>
+                <div className="grid md:grid-cols-3 gap-8">
+                  {related.map((p, i) => (
+                    <motion.a
+                      key={p.id}
+                      href={`/blog/${p.slug}`}
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      whileHover={{ y: -6, transition: { duration: 0.25, ease: "easeOut" } }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.6, delay: i * 0.1 }}
+                      className="group flex flex-col border border-gold/10 hover:border-gold/40 transition-colors"
+                    >
+                      {p.coverImageUrl ? (
+                        <div className="aspect-[16/10] bg-graphite overflow-hidden">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src={p.coverImageUrl} alt={p.title} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" />
+                        </div>
+                      ) : (
+                        <div className="aspect-[16/10] bg-graphite" />
+                      )}
+                      <div className="p-5 flex-1 flex flex-col">
+                        <p className="text-gold text-[10px] tracking-widest uppercase mb-2 font-[family-name:var(--font-montserrat)]">{p.category}</p>
+                        <h3 className="font-[family-name:var(--font-playfair)] text-lg mb-2 group-hover:text-gold transition-colors leading-tight">{p.title}</h3>
+                        <p className="text-taupe text-[10px] tracking-widest uppercase font-[family-name:var(--font-montserrat)] mt-auto">
+                          {p.publishedAt ? new Date(p.publishedAt).toLocaleDateString(undefined, { year: "numeric", month: "short" }) : ""}
+                        </p>
+                      </div>
+                    </motion.a>
+                  ))}
+                </div>
+              </div>
+            </section>
+          )}
+
         </>
       )}
 
