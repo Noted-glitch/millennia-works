@@ -12,6 +12,10 @@ function formatDate(ms?: number) {
   return new Date(ms).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" });
 }
 
+function readingTime(content: string): number {
+  return Math.max(1, Math.round(content.trim().split(/\s+/).length / 200));
+}
+
 export default function BlogIndex() {
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
@@ -99,7 +103,10 @@ export default function BlogIndex() {
                     <p className="text-gold text-[10px] tracking-widest uppercase mb-3 font-[family-name:var(--font-montserrat)]">{p.category}</p>
                     <h2 className="font-[family-name:var(--font-playfair)] text-2xl mb-3 group-hover:text-gold transition-colors leading-tight">{p.title}</h2>
                     <p className="text-champagne/70 text-sm leading-relaxed mb-4 line-clamp-3">{p.excerpt}</p>
-                    <p className="text-taupe text-[10px] tracking-widest uppercase font-[family-name:var(--font-montserrat)] mt-auto">{formatDate(p.publishedAt)}</p>
+                    <div className="flex items-center gap-2 text-taupe text-[10px] tracking-widest uppercase font-[family-name:var(--font-montserrat)] mt-auto">
+                      <span>{formatDate(p.publishedAt)}</span>
+                      {p.content && <><span>·</span><span>{readingTime(p.content)} min read</span></>}
+                    </div>
                   </div>
                 </motion.a>
               ))}

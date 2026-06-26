@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { getServiceBySlug } from "@/lib/services";
 import { getAllProjects } from "@/lib/portfolio";
+import { slugify } from "@/lib/slug";
 import { getAllTestimonials } from "@/lib/testimonials";
 import { getPublishedPosts } from "@/lib/blog";
 import { SiteNav } from "@/components/SiteNav";
@@ -170,15 +171,17 @@ export function ServiceContent({ slug }: { slug: string }) {
                       </div>
                     );
                     return (
-                      <motion.div
+                      <motion.a
                         key={p.id}
+                        href={`/work/${slugify(p.title)}`}
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
+                        whileHover={{ y: -6, transition: { duration: 0.25, ease: "easeOut" } }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.6, delay: i * 0.15 }}
                       >
-                        {p.projectUrl ? <a href={p.projectUrl} target="_blank" rel="noopener noreferrer">{card}</a> : card}
-                      </motion.div>
+                        {card}
+                      </motion.a>
                     );
                   })}
                 </div>

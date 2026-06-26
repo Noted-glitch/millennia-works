@@ -330,6 +330,16 @@ export default function Home() {
     })}
   </div>
 )}
+          {!projectsLoading && featuredProjects.length > 0 && (
+            <div className="text-center mt-12">
+              <a
+                href="/work"
+                className="inline-flex text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] border border-gold/30 text-gold px-8 py-3.5 rounded hover:bg-gold hover:text-navy transition-colors"
+              >
+                View all work →
+              </a>
+            </div>
+          )}
         </div>
       </section>
 
