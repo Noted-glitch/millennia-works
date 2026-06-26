@@ -5,11 +5,13 @@ import { useRouter } from "next/navigation";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { getAllProjects, createProject, updateProject, deleteProject } from "@/lib/portfolio";
+import { slugify } from "@/lib/slug";
 import { PROJECT_CATEGORIES, type Project } from "@/lib/types";
 import ImageUpload from "@/components/ImageUpload";
 import Select from "@/components/Select";
 
 const emptyProject: Omit<Project, "id" | "createdAt" | "updatedAt"> = {
+  slug: "",
   title: "",
   category: PROJECT_CATEGORIES[0],
   description: "",
@@ -29,6 +31,7 @@ export default function PortfolioManager() {
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState(emptyProject);
+  const [slugTouched, setSlugTouched] = useState(false);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
 
@@ -59,12 +62,14 @@ export default function PortfolioManager() {
 
   function openCreate() {
     setForm({ ...emptyProject, order: projects.length });
+    setSlugTouched(false);
     setEditingId(null);
     setShowForm(true);
   }
 
   function openEdit(p: Project) {
     setForm({
+      slug: p.slug || slugify(p.title),
       title: p.title,
       category: p.category,
       description: p.description,
@@ -75,8 +80,23 @@ export default function PortfolioManager() {
       featured: p.featured,
       order: p.order,
     });
+    // Always treat existing slugs as touched — don't auto-update from title edits.
+    setSlugTouched(true);
     setEditingId(p.id || null);
     setShowForm(true);
+  }
+
+  function handleTitleChange(value: string) {
+    setForm((prev) => ({
+      ...prev,
+      title: value,
+      slug: slugTouched ? prev.slug : slugify(value),
+    }));
+  }
+
+  function handleSlugChange(value: string) {
+    setSlugTouched(true);
+    setForm((prev) => ({ ...prev, slug: slugify(value) }));
   }
 
   async function handleSave(e: React.FormEvent) {
@@ -86,6 +106,18 @@ export default function PortfolioManager() {
     try {
       if (!form.imageUrl) {
         setMessage("Please upload a project image.");
+        setSaving(false);
+        return;
+      }
+      if (!form.slug) {
+        setMessage("Slug cannot be empty.");
+        setSaving(false);
+        return;
+      }
+      // Collision check — no two projects can share a slug.
+      const collision = projects.find((p) => p.slug === form.slug && p.id !== editingId);
+      if (collision) {
+        setMessage(`Slug "${form.slug}" is already used by "${collision.title}". Pick another.`);
         setSaving(false);
         return;
       }
@@ -99,6 +131,7 @@ export default function PortfolioManager() {
       setShowForm(false);
       setEditingId(null);
       setForm(emptyProject);
+      setSlugTouched(false);
       await loadProjects();
     } catch (err) {
       console.error(err);
@@ -158,9 +191,29 @@ export default function PortfolioManager() {
             <h2 className="font-[family-name:var(--font-playfair)] text-xl mb-4">{editingId ? "Edit project" : "New project"}</h2>
 
             <div className="grid md:grid-cols-2 gap-5">
+              {/* Title — drives auto-slug on create */}
               <div>
                 <label className="block text-xs tracking-widest uppercase text-taupe mb-2 font-[family-name:var(--font-montserrat)]">Title *</label>
-                <input type="text" required value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} className="w-full bg-transparent border border-gold/30 text-pearl px-4 py-3 focus:outline-none focus:border-gold" />
+                <input
+                  type="text"
+                  required
+                  value={form.title}
+                  onChange={(e) => handleTitleChange(e.target.value)}
+                  className="w-full bg-transparent border border-gold/30 text-pearl px-4 py-3 focus:outline-none focus:border-gold"
+                />
+              </div>
+
+              {/* Slug — editable, shows URL preview */}
+              <div>
+                <label className="block text-xs tracking-widest uppercase text-taupe mb-2 font-[family-name:var(--font-montserrat)]">Slug *</label>
+                <input
+                  type="text"
+                  required
+                  value={form.slug}
+                  onChange={(e) => handleSlugChange(e.target.value)}
+                  className="w-full bg-transparent border border-gold/30 text-pearl px-4 py-3 focus:outline-none focus:border-gold font-mono text-sm"
+                />
+                <p className="text-taupe text-xs mt-2">URL: millenniaworks.com/work/{form.slug || "your-slug"}</p>
               </div>
 
               <div>
@@ -217,11 +270,14 @@ export default function PortfolioManager() {
               </div>
             </div>
 
-            <div className="flex gap-3 pt-4">
+            <div className="flex flex-wrap gap-3 pt-4">
               <button type="submit" disabled={saving} className="bg-gold text-navy text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] px-6 py-3 rounded hover:bg-pearl transition-colors disabled:opacity-50">
                 {saving ? "Saving..." : editingId ? "Update project" : "Create project"}
               </button>
               <button type="button" onClick={() => { setShowForm(false); setEditingId(null); }} className="border border-gold/30 text-gold text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] px-6 py-3 rounded hover:bg-gold/10 transition-colors">Cancel</button>
+              {form.slug && (
+                <a href={`/work/${form.slug}`} target="_blank" rel="noopener noreferrer" className="border border-gold/30 text-gold text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] px-6 py-3 rounded hover:bg-gold/10 transition-colors ml-auto">Preview ↗</a>
+              )}
             </div>
           </form>
         )}
@@ -252,8 +308,10 @@ export default function PortfolioManager() {
                   </div>
                   <h3 className="font-[family-name:var(--font-playfair)] text-xl mb-2">{p.title}</h3>
                   <p className="text-champagne/70 text-sm mb-3 line-clamp-2">{p.description}</p>
-                  <p className="text-taupe text-xs mb-4">{p.client && `${p.client} · `}{p.year}</p>
+                  <p className="text-taupe text-xs mb-1">{p.client && `${p.client} · `}{p.year}</p>
+                  <p className="text-taupe text-[10px] font-mono mb-4 truncate">/work/{p.slug || slugify(p.title)}</p>
                   <div className="flex gap-2 mt-auto">
+                    <a href={`/work/${p.slug || slugify(p.title)}`} target="_blank" rel="noopener noreferrer" className="border border-gold/30 text-gold text-xs tracking-widest uppercase py-2 px-3 hover:bg-gold/10 transition-colors font-[family-name:var(--font-montserrat)]">View ↗</a>
                     <button onClick={() => openEdit(p)} className="flex-1 border border-gold/30 text-gold text-xs tracking-widest uppercase py-2 hover:bg-gold/10 transition-colors font-[family-name:var(--font-montserrat)]">Edit</button>
                     <button onClick={() => p.id && handleDelete(p.id, p.title)} className="flex-1 border border-red-400/30 text-red-400 text-xs tracking-widest uppercase py-2 hover:bg-red-400/10 transition-colors font-[family-name:var(--font-montserrat)]">Delete</button>
                   </div>

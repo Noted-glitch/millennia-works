@@ -68,7 +68,7 @@ export default function WorkIndex() {
               {projects.map((p, i) => (
                 <motion.a
                   key={p.id}
-                  href={`/work/${slugify(p.title)}`}
+                  href={`/work/${p.slug || slugify(p.title)}`}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   whileHover={{ y: -6, transition: { duration: 0.25, ease: "easeOut" } }}

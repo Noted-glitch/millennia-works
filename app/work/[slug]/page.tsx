@@ -1,17 +1,14 @@
 import type { Metadata } from "next";
-import { getAllProjectsServer } from "@/lib/server/portfolio";
+import { getProjectBySlugServer } from "@/lib/server/portfolio";
 import { getSettingsServer } from "@/lib/server/settings";
-import { slugify } from "@/lib/slug";
 import { WorkContent } from "./WorkContent";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
-  const [projects, settings] = await Promise.all([
-    getAllProjectsServer(),
+  const [project, settings] = await Promise.all([
+    getProjectBySlugServer(slug),
     getSettingsServer(),
   ]);
-
-  const project = projects.find((p) => slugify(p.title) === slug);
 
   if (!project) {
     return {

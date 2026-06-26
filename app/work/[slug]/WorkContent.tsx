@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { getAllProjects } from "@/lib/portfolio";
+import { getProjectBySlug, getAllProjects } from "@/lib/portfolio";
 import { slugify } from "@/lib/slug";
 import { SiteNav } from "@/components/SiteNav";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -17,8 +17,7 @@ export function WorkContent({ slug }: { slug: string }) {
   useEffect(() => {
     async function load() {
       try {
-        const all = await getAllProjects();
-        const match = all.find((p) => slugify(p.title) === slug);
+        const [match, all] = await Promise.all([getProjectBySlug(slug), getAllProjects()]);
         if (!match) { setNotFound(true); return; }
         setProject(match);
         setRelated(all.filter((p) => p.id !== match.id && p.imageUrl).slice(0, 3));
@@ -167,7 +166,7 @@ export function WorkContent({ slug }: { slug: string }) {
                   {related.map((p, i) => (
                     <motion.a
                       key={p.id}
-                      href={`/work/${slugify(p.title)}`}
+                      href={`/work/${p.slug || slugify(p.title)}`}
                       initial={{ opacity: 0, y: 20 }}
                       whileInView={{ opacity: 1, y: 0 }}
                       whileHover={{ y: -6, transition: { duration: 0.25, ease: "easeOut" } }}

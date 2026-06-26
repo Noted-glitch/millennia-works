@@ -53,7 +53,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   const projectEntries: MetadataRoute.Sitemap = projects.map((p) => ({
-    url: `${BASE_URL}/work/${slugify(p.title)}`,
+    url: `${BASE_URL}/work/${p.slug || slugify(p.title)}`,
     lastModified: p.updatedAt ? new Date(p.updatedAt) : now,
     changeFrequency: "monthly" as const,
     priority: 0.7,
