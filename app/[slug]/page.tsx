@@ -28,7 +28,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       title: service.title,
       description: service.longDescription,
       type: "website",
-      url: `https://millenniaworks.com/services/${service.slug}`,
+      url: `https://millenniaworks.com/${service.slug}`,
       siteName: "Millennia Works",
       images,
     },

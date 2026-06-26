@@ -229,7 +229,7 @@ export default function ServicesManager() {
               <div>
                 <label className="block text-xs tracking-widest uppercase text-taupe mb-2 font-[family-name:var(--font-montserrat)]">Slug *</label>
                 <input type="text" required value={form.slug} onChange={(e) => handleSlugChange(e.target.value)} className="w-full bg-transparent border border-gold/30 text-pearl px-4 py-3 focus:outline-none focus:border-gold font-mono text-sm" />
-                <p className="text-taupe text-xs mt-2">URL: /services/{form.slug || "your-slug"}</p>
+                <p className="text-taupe text-xs mt-2">URL: /{form.slug || "your-slug"}</p>
               </div>
 
               <div>
@@ -290,7 +290,7 @@ export default function ServicesManager() {
               </button>
               <button type="button" onClick={() => { setShowForm(false); setEditingId(null); }} className="border border-gold/30 text-gold text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] px-6 py-3 rounded hover:bg-gold/10 transition-colors">Cancel</button>
               {form.slug && (
-                <a href={`/services/${form.slug}`} target="_blank" rel="noopener noreferrer" className="border border-gold/30 text-gold text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] px-6 py-3 rounded hover:bg-gold/10 transition-colors ml-auto">Preview ↗</a>
+                <a href={`/${form.slug}`} target="_blank" rel="noopener noreferrer" className="border border-gold/30 text-gold text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] px-6 py-3 rounded hover:bg-gold/10 transition-colors ml-auto">Preview ↗</a>
               )}
             </div>
           </form>
@@ -313,10 +313,10 @@ export default function ServicesManager() {
                     <p className="text-pearl text-sm font-medium truncate">{s.title || "(untitled)"}</p>
                     {s.featured && <span className="text-[10px] bg-gold text-navy px-2 py-0.5 tracking-widest uppercase font-[family-name:var(--font-montserrat)]">Featured</span>}
                   </div>
-                  <p className="text-taupe text-xs truncate">{s.category} · order {s.order} · /services/{s.slug}</p>
+                  <p className="text-taupe text-xs truncate">{s.category} · order {s.order} · /{s.slug}</p>
                 </div>
                 <div className="flex gap-2 shrink-0">
-                  <a href={`/services/${s.slug}`} target="_blank" rel="noopener noreferrer" className="border border-gold/30 text-gold text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] px-4 py-2 rounded hover:bg-gold/10 transition-colors">View ↗</a>
+                  <a href={`/${s.slug}`} target="_blank" rel="noopener noreferrer" className="border border-gold/30 text-gold text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] px-4 py-2 rounded hover:bg-gold/10 transition-colors">View ↗</a>
                   <button onClick={() => openEdit(s)} className="border border-gold/30 text-gold text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] px-4 py-2 rounded hover:bg-gold/10 transition-colors">Edit</button>
                   <button onClick={() => s.id && handleDelete(s.id, s.title)} className="border border-red-400/30 text-red-400 text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] px-4 py-2 rounded hover:bg-red-400/10 transition-colors">Delete</button>
                 </div>

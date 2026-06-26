@@ -60,8 +60,15 @@ export function ServiceContent({ slug }: { slug: string }) {
       <SiteNav activeLink="services" />
 
       {loading ? (
-        <div className="min-h-screen flex items-center justify-center">
-          <p className="text-taupe text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)]">Loading...</p>
+        <div className="pt-32 pb-20 px-6">
+          <div className="max-w-4xl mx-auto text-center space-y-5">
+            <div className="skeleton h-3 w-32 mx-auto rounded" />
+            <div className="skeleton h-16 w-3/4 mx-auto rounded" />
+            <div className="space-y-2 max-w-xl mx-auto">
+              <div className="skeleton h-4 w-full rounded" />
+              <div className="skeleton h-4 w-5/6 rounded" />
+            </div>
+          </div>
         </div>
       ) : notFound || !service ? (
         <section className="min-h-screen flex items-center justify-center px-6 pt-20">
@@ -200,13 +207,15 @@ export function ServiceContent({ slug }: { slug: string }) {
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true }}
                       transition={{ duration: 0.6, delay: i * 0.15 }}
-                      className="border border-gold/20 p-8 md:p-10"
+                      className="relative bg-graphite/20 border border-gold/20 p-8 md:p-10 overflow-hidden"
                     >
-                      <p className="text-gold text-3xl font-[family-name:var(--font-playfair)] mb-4">&ldquo;</p>
-                      <p className="text-champagne text-base md:text-lg leading-relaxed italic font-[family-name:var(--font-playfair)] mb-6">{t.quote}</p>
-                      <div>
-                        <p className="text-pearl text-sm font-medium">{t.clientName}</p>
-                        <p className="text-taupe text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] mt-1">{t.role}{t.role && t.company && " · "}{t.company}</p>
+                      <span className="absolute top-4 right-6 text-gold/10 font-[family-name:var(--font-playfair)] leading-none select-none pointer-events-none" style={{ fontSize: "8rem" }}>&ldquo;</span>
+                      <div className="relative">
+                        <p className="text-champagne text-base md:text-lg leading-relaxed italic font-[family-name:var(--font-playfair)] mb-8">{t.quote}</p>
+                        <div className="border-t border-gold/20 pt-5">
+                          <p className="text-pearl text-sm font-medium">{t.clientName}</p>
+                          <p className="text-taupe text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] mt-1">{t.role}{t.role && t.company && " · "}{t.company}</p>
+                        </div>
                       </div>
                     </motion.div>
                   ))}

@@ -234,7 +234,7 @@ export default function Home() {
                 .map((service, i) => (
                 <motion.a
                   key={service.id}
-                  href={`/services/${service.slug}`}
+                  href={`/${service.slug}`}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
