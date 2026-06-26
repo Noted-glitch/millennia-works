@@ -7,6 +7,7 @@ import { auth } from "@/lib/firebase";
 import { getAllServices, createService, updateService, deleteService, seedDefaultServices } from "@/lib/services";
 import { slugify } from "@/lib/slug";
 import { PROJECT_CATEGORIES, type Service } from "@/lib/types";
+import Select from "@/components/Select";
 
 const emptyService: Omit<Service, "id" | "createdAt" | "updatedAt"> = {
   title: "",
@@ -233,9 +234,12 @@ export default function ServicesManager() {
 
               <div>
                 <label className="block text-xs tracking-widest uppercase text-taupe mb-2 font-[family-name:var(--font-montserrat)]">Category *</label>
-                <select required value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} className="w-full bg-navy border border-gold/30 text-pearl px-4 py-3 focus:outline-none focus:border-gold">
-                  {PROJECT_CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
-                </select>
+                <Select
+                  required
+                  value={form.category}
+                  onChange={(v) => setForm({ ...form, category: v })}
+                  options={PROJECT_CATEGORIES.map((c) => ({ value: c, label: c }))}
+                />
                 <p className="text-taupe text-xs mt-2">Cross-link key for related work, testimonials, posts.</p>
               </div>
 

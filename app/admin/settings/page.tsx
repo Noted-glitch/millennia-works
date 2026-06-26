@@ -8,6 +8,7 @@ import { updateSettings } from "@/lib/settings";
 import { useSettings } from "@/lib/settings-context";
 import { PROJECT_CATEGORIES, type HeroMediaType, type SiteSettings } from "@/lib/types";
 import ImageUpload from "@/components/ImageUpload";
+import Select from "@/components/Select";
 
 function SectionCard({ eyebrow, title, children }: { eyebrow: string; title: string; children: React.ReactNode }) {
   return (
@@ -166,11 +167,16 @@ export default function SettingsManager() {
         <SectionCard eyebrow="Hero" title="Hero — media">
           <div>
             <label className="block text-xs tracking-widest uppercase text-taupe mb-2 font-[family-name:var(--font-montserrat)]">Media type *</label>
-            <select required value={form.heroMediaType} onChange={(e) => update("heroMediaType", e.target.value as HeroMediaType)} className="w-full bg-navy border border-gold/30 text-pearl px-4 py-3 focus:outline-none focus:border-gold">
-              <option value="color">Color (solid navy — current default)</option>
-              <option value="video">Video</option>
-              <option value="image">Image</option>
-            </select>
+            <Select
+              required
+              value={form.heroMediaType}
+              onChange={(v) => update("heroMediaType", v as HeroMediaType)}
+              options={[
+                { value: "color", label: "Color (solid navy — current default)" },
+                { value: "video", label: "Video" },
+                { value: "image", label: "Image" },
+              ]}
+            />
             <p className="text-taupe text-xs mt-2">Use &ldquo;color&rdquo; until you have a high-quality custom video. Bad video is worse than no video.</p>
           </div>
 

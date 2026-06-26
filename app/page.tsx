@@ -9,6 +9,7 @@ import { submitInquiry } from "@/lib/inquiries";
 import { useSettings } from "@/lib/settings-context";
 import { PROJECT_CATEGORIES, type Project, type Testimonial, type Service } from "@/lib/types";
 import { slugify } from "@/lib/slug";
+import Select from "@/components/Select";
 import { SiteNav } from "@/components/SiteNav";
 import { SiteFooter } from "@/components/SiteFooter";
 
@@ -496,10 +497,12 @@ export default function Home() {
 
                 <div>
                   <label className="block text-xs tracking-widest uppercase text-taupe mb-2 font-[family-name:var(--font-montserrat)]">Project type</label>
-                  <select value={inquiryForm.projectType} onChange={(e) => setInquiryForm({ ...inquiryForm, projectType: e.target.value })} className="w-full bg-navy border border-gold/30 text-pearl px-4 py-3 focus:outline-none focus:border-gold">
-                    <option value="">Select one...</option>
-                    {PROJECT_CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
-                  </select>
+                  <Select
+                    value={inquiryForm.projectType}
+                    onChange={(v) => setInquiryForm({ ...inquiryForm, projectType: v })}
+                    options={PROJECT_CATEGORIES.map((c) => ({ value: c, label: c }))}
+                    placeholder="Select one..."
+                  />
                 </div>
               </div>
 

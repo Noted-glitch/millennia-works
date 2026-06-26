@@ -7,6 +7,7 @@ import { auth } from "@/lib/firebase";
 import { getAllPosts, createPost, updatePost, deletePost } from "@/lib/blog";
 import { slugify } from "@/lib/slug";
 import ImageUpload from "@/components/ImageUpload";
+import Select from "@/components/Select";
 import { PROJECT_CATEGORIES, BLOG_STATUSES, type BlogPost, type BlogStatus } from "@/lib/types";
 
 const emptyPost: Omit<BlogPost, "id" | "createdAt" | "updatedAt"> = {
@@ -203,16 +204,22 @@ export default function BlogManager() {
 
               <div>
                 <label className="block text-xs tracking-widest uppercase text-taupe mb-2 font-[family-name:var(--font-montserrat)]">Category *</label>
-                <select required value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} className="w-full bg-navy border border-gold/30 text-pearl px-4 py-3 focus:outline-none focus:border-gold">
-                  {PROJECT_CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
-                </select>
+                <Select
+                  required
+                  value={form.category}
+                  onChange={(v) => setForm({ ...form, category: v })}
+                  options={PROJECT_CATEGORIES.map((c) => ({ value: c, label: c }))}
+                />
               </div>
 
               <div>
                 <label className="block text-xs tracking-widest uppercase text-taupe mb-2 font-[family-name:var(--font-montserrat)]">Status *</label>
-                <select required value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value as BlogStatus })} className="w-full bg-navy border border-gold/30 text-pearl px-4 py-3 focus:outline-none focus:border-gold">
-                  {BLOG_STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
-                </select>
+                <Select
+                  required
+                  value={form.status}
+                  onChange={(v) => setForm({ ...form, status: v as BlogStatus })}
+                  options={BLOG_STATUSES.map((s) => ({ value: s, label: s }))}
+                />
               </div>
 
               <div>

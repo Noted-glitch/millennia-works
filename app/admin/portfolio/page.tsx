@@ -7,6 +7,7 @@ import { auth } from "@/lib/firebase";
 import { getAllProjects, createProject, updateProject, deleteProject } from "@/lib/portfolio";
 import { PROJECT_CATEGORIES, type Project } from "@/lib/types";
 import ImageUpload from "@/components/ImageUpload";
+import Select from "@/components/Select";
 
 const emptyProject: Omit<Project, "id" | "createdAt" | "updatedAt"> = {
   title: "",
@@ -164,9 +165,12 @@ export default function PortfolioManager() {
 
               <div>
                 <label className="block text-xs tracking-widest uppercase text-taupe mb-2 font-[family-name:var(--font-montserrat)]">Category *</label>
-                <select required value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} className="w-full bg-navy border border-gold/30 text-pearl px-4 py-3 focus:outline-none focus:border-gold">
-                  {PROJECT_CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
-                </select>
+                <Select
+                  required
+                  value={form.category}
+                  onChange={(v) => setForm({ ...form, category: v })}
+                  options={PROJECT_CATEGORIES.map((c) => ({ value: c, label: c }))}
+                />
               </div>
 
               <div>

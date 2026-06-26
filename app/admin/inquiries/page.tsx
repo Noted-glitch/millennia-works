@@ -6,6 +6,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { getAllInquiries, updateInquiry, deleteInquiry } from "@/lib/inquiries";
 import { INQUIRY_STATUSES, type Inquiry, type InquiryStatus } from "@/lib/types";
+import Select from "@/components/Select";
 
 type Filter = InquiryStatus | "all";
 
@@ -215,9 +216,11 @@ export default function InquiriesManager() {
                       <div className="grid md:grid-cols-2 gap-5">
                         <div>
                           <label className="block text-xs tracking-widest uppercase text-taupe mb-2 font-[family-name:var(--font-montserrat)]">Status</label>
-                          <select value={editStatus} onChange={(e) => setEditStatus(e.target.value as InquiryStatus)} className="w-full bg-navy border border-gold/30 text-pearl px-4 py-3 focus:outline-none focus:border-gold">
-                            {INQUIRY_STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
-                          </select>
+                          <Select
+                            value={editStatus}
+                            onChange={(v) => setEditStatus(v as InquiryStatus)}
+                            options={INQUIRY_STATUSES.map((s) => ({ value: s, label: s }))}
+                          />
                         </div>
 
                         <div className="flex items-end">

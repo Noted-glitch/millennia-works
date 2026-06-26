@@ -6,6 +6,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { getAllTestimonials, createTestimonial, updateTestimonial, deleteTestimonial } from "@/lib/testimonials";
 import { PROJECT_CATEGORIES, type Testimonial } from "@/lib/types";
+import Select from "@/components/Select";
 
 const emptyTestimonial: Omit<Testimonial, "id" | "createdAt" | "updatedAt"> = {
   quote: "",
@@ -161,9 +162,12 @@ export default function TestimonialsManager() {
 
               <div>
                 <label className="block text-xs tracking-widest uppercase text-taupe mb-2 font-[family-name:var(--font-montserrat)]">Category *</label>
-                <select required value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} className="w-full bg-navy border border-gold/30 text-pearl px-4 py-3 focus:outline-none focus:border-gold">
-                  {PROJECT_CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
-                </select>
+                <Select
+                  required
+                  value={form.category}
+                  onChange={(v) => setForm({ ...form, category: v })}
+                  options={PROJECT_CATEGORIES.map((c) => ({ value: c, label: c }))}
+                />
               </div>
 
               <div>
