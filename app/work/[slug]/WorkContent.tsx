@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { getProjectBySlug, getAllProjects } from "@/lib/portfolio";
 import { slugify } from "@/lib/slug";
 import { SiteNav } from "@/components/SiteNav";
@@ -13,6 +13,7 @@ export function WorkContent({ slug }: { slug: string }) {
   const [related, setRelated]   = useState<Project[]>([]);
   const [loading, setLoading]   = useState(true);
   const [notFound, setNotFound] = useState(false);
+  const [lightbox, setLightbox] = useState<number | null>(null);
 
   useEffect(() => {
     async function load() {
@@ -30,6 +31,24 @@ export function WorkContent({ slug }: { slug: string }) {
     }
     load();
   }, [slug]);
+
+  // Lightbox: lock body scroll and wire up keyboard nav (Esc / arrows).
+  useEffect(() => {
+    if (lightbox === null) return;
+    document.body.style.overflow = "hidden";
+    function onKey(e: KeyboardEvent) {
+      const gallery = project?.galleryImageUrls;
+      if (!gallery || gallery.length === 0) return;
+      if (e.key === "Escape") setLightbox(null);
+      else if (e.key === "ArrowLeft") setLightbox((v) => (v === null ? v : (v - 1 + gallery.length) % gallery.length));
+      else if (e.key === "ArrowRight") setLightbox((v) => (v === null ? v : (v + 1) % gallery.length));
+    }
+    window.addEventListener("keydown", onKey);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [lightbox, project]);
 
   return (
     <main className="min-h-screen bg-navy text-pearl">
@@ -147,6 +166,47 @@ export function WorkContent({ slug }: { slug: string }) {
             </div>
           </section>
 
+          {/* ── Gallery ── */}
+          {project.galleryImageUrls && project.galleryImageUrls.length > 0 && (
+            <section className="py-20 px-6 border-t border-gold/10">
+              <div className="max-w-5xl mx-auto">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.8 }}
+                  className="mb-10"
+                >
+                  <p className="text-xs tracking-[0.4em] uppercase text-gold mb-2 font-[family-name:var(--font-montserrat)]">Gallery</p>
+                  <h2 className="font-[family-name:var(--font-playfair)] text-3xl font-normal">A closer <span className="text-gold italic">look.</span></h2>
+                </motion.div>
+
+                <div className="grid sm:grid-cols-2 gap-4 md:gap-6">
+                  {project.galleryImageUrls.map((url, i) => (
+                    <motion.button
+                      type="button"
+                      key={url}
+                      onClick={() => setLightbox(i)}
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true, margin: "0px 0px -10% 0px" }}
+                      transition={{ duration: 0.6, delay: (i % 2) * 0.1 }}
+                      className="group block aspect-[4/3] bg-graphite overflow-hidden border border-gold/10 hover:border-gold/40 transition-colors cursor-zoom-in"
+                    >
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={url}
+                        alt={`${project.title} — image ${i + 1}`}
+                        loading="lazy"
+                        className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500"
+                      />
+                    </motion.button>
+                  ))}
+                </div>
+              </div>
+            </section>
+          )}
+
           {/* ── More work ── */}
           {related.length > 0 && (
             <section className="py-20 px-6 border-t border-gold/10">
@@ -209,6 +269,74 @@ export function WorkContent({ slug }: { slug: string }) {
               </a>
             </motion.div>
           </section>
+
+          {/* ── Lightbox ── */}
+          <AnimatePresence>
+            {lightbox !== null && project.galleryImageUrls && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.25 }}
+                onClick={() => setLightbox(null)}
+                className="fixed inset-0 z-50 bg-navy/95 backdrop-blur-sm flex items-center justify-center p-4 sm:p-10"
+              >
+                <button
+                  type="button"
+                  onClick={() => setLightbox(null)}
+                  aria-label="Close"
+                  className="absolute top-5 right-6 text-pearl/70 hover:text-gold text-4xl leading-none transition-colors"
+                >
+                  ×
+                </button>
+
+                {project.galleryImageUrls.length > 1 && (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      const n = project.galleryImageUrls!.length;
+                      setLightbox((v) => (v === null ? v : (v - 1 + n) % n));
+                    }}
+                    aria-label="Previous image"
+                    className="absolute left-3 sm:left-8 text-pearl/70 hover:text-gold text-5xl leading-none px-2 transition-colors"
+                  >
+                    ‹
+                  </button>
+                )}
+
+                <motion.img
+                  key={lightbox}
+                  src={project.galleryImageUrls[lightbox]}
+                  alt={`${project.title} — image ${lightbox + 1}`}
+                  initial={{ opacity: 0, scale: 0.98 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.2 }}
+                  onClick={(e) => e.stopPropagation()}
+                  className="max-w-full max-h-[85vh] object-contain border border-gold/20"
+                />
+
+                {project.galleryImageUrls.length > 1 && (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      const n = project.galleryImageUrls!.length;
+                      setLightbox((v) => (v === null ? v : (v + 1) % n));
+                    }}
+                    aria-label="Next image"
+                    className="absolute right-3 sm:right-8 text-pearl/70 hover:text-gold text-5xl leading-none px-2 transition-colors"
+                  >
+                    ›
+                  </button>
+                )}
+
+                <span className="absolute bottom-5 left-1/2 -translate-x-1/2 text-taupe text-xs tracking-widest font-[family-name:var(--font-montserrat)]">
+                  {lightbox + 1} / {project.galleryImageUrls.length}
+                </span>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </>
       )}
 

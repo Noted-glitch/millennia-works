@@ -1,12 +1,17 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
-import { auth } from "@/lib/firebase";
+import {
+  ACCEPTED_TYPES,
+  uploadImageToR2,
+  deleteImageFromR2,
+  validateImageFile,
+} from "@/lib/r2-upload-client";
 
-export type UploadCategory = "portfolio" | "blog" | "settings";
+export type { UploadCategory } from "@/lib/r2-upload-client";
 
 interface ImageUploadProps {
-  category: UploadCategory;
+  category: "portfolio" | "blog" | "settings";
   /** Current image URL (empty string when none). */
   value?: string;
   /** Called with the new public URL on success, or "" when removed. */
@@ -16,9 +21,6 @@ interface ImageUploadProps {
   /** Optional dimension/format hint shown below the drop zone. */
   hint?: string;
 }
-
-const ACCEPTED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
-const MAX_BYTES = 5 * 1024 * 1024; // 5 MB
 
 export default function ImageUpload({
   category,
@@ -39,21 +41,6 @@ export default function ImageUpload({
   const uploading = progress !== null;
   const previewSrc = localPreview || value || null;
 
-  async function deleteFromR2(url: string) {
-    const user = auth.currentUser;
-    if (!user || !url) return;
-    try {
-      const token = await user.getIdToken();
-      await fetch("/api/upload", {
-        method: "DELETE",
-        headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
-        body: JSON.stringify({ url }),
-      });
-    } catch {
-      // Silent — orphaned objects are not critical
-    }
-  }
-
   // Revoke the blob URL when the component unmounts to avoid memory leaks.
   useEffect(() => {
     return () => {
@@ -65,68 +52,23 @@ export default function ImageUpload({
     setError("");
     const previousUrl = value; // capture before anything changes — used to delete old R2 object on replace
 
-    if (!ACCEPTED_TYPES.includes(file.type)) {
-      setError("Unsupported file type. Use JPEG, PNG, WebP, or GIF.");
-      return;
-    }
-    if (file.size > MAX_BYTES) {
-      setError("File too large. Maximum size is 5 MB.");
-      return;
-    }
-
-    const user = auth.currentUser;
-    if (!user) {
-      setError("You appear to be signed out. Refresh the page and sign in again.");
-      return;
-    }
-
-    let token: string;
-    try {
-      token = await user.getIdToken();
-    } catch {
-      setError("Could not verify your session. Please try again.");
+    // Validate up front so the preview only appears for a valid file.
+    const validationError = validateImageFile(file);
+    if (validationError) {
+      setError(validationError);
       return;
     }
 
     const blobUrl = URL.createObjectURL(file);
     setLocalPreview(blobUrl);
-
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("category", category);
-
     setProgress(0);
     try {
-      const url = await new Promise<string>((resolve, reject) => {
-        const xhr = new XMLHttpRequest();
-        xhr.open("POST", "/api/upload");
-        xhr.setRequestHeader("Authorization", `Bearer ${token}`);
-
-        xhr.upload.onprogress = (e) => {
-          if (e.lengthComputable) {
-            setProgress(Math.round((e.loaded / e.total) * 100));
-          }
-        };
-
-        xhr.onload = () => {
-          let body: { url?: string; error?: string } = {};
-          try { body = JSON.parse(xhr.responseText); } catch { /* non-JSON */ }
-          if (xhr.status >= 200 && xhr.status < 300 && body.url) {
-            resolve(body.url);
-          } else {
-            reject(new Error(body.error || `Upload failed (${xhr.status}).`));
-          }
-        };
-
-        xhr.onerror = () => reject(new Error("Network error during upload."));
-        xhr.send(formData);
-      });
-
+      const url = await uploadImageToR2(file, category, (p) => setProgress(p));
       URL.revokeObjectURL(blobUrl);
       setLocalPreview(null);
       onChange(url);
       // Delete the old object only after the new one is confirmed saved.
-      if (previousUrl) deleteFromR2(previousUrl);
+      if (previousUrl) deleteImageFromR2(previousUrl);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Upload failed.");
       URL.revokeObjectURL(blobUrl);
@@ -204,7 +146,7 @@ export default function ImageUpload({
                     setError("");
                     const urlToDelete = value;
                     onChange("");
-                    if (urlToDelete) deleteFromR2(urlToDelete);
+                    if (urlToDelete) deleteImageFromR2(urlToDelete);
                   }}
                   className="border border-red-400/30 text-red-400 text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] px-4 py-2 rounded hover:bg-red-400/10 transition-colors"
                 >

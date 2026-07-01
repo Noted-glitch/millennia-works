@@ -5,6 +5,7 @@ export interface Project {
   category: string;
   description: string;
   imageUrl: string;
+  galleryImageUrls?: string[];
   client: string;
   year: string;
   projectUrl: string;

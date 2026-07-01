@@ -8,6 +8,7 @@ import { getAllProjects, createProject, updateProject, deleteProject } from "@/l
 import { slugify } from "@/lib/slug";
 import { PROJECT_CATEGORIES, type Project } from "@/lib/types";
 import ImageUpload from "@/components/ImageUpload";
+import GalleryUpload from "@/components/GalleryUpload";
 import Select from "@/components/Select";
 
 const emptyProject: Omit<Project, "id" | "createdAt" | "updatedAt"> = {
@@ -16,6 +17,7 @@ const emptyProject: Omit<Project, "id" | "createdAt" | "updatedAt"> = {
   category: PROJECT_CATEGORIES[0],
   description: "",
   imageUrl: "",
+  galleryImageUrls: [],
   client: "",
   year: new Date().getFullYear().toString(),
   projectUrl: "",
@@ -74,6 +76,7 @@ export default function PortfolioManager() {
       category: p.category,
       description: p.description,
       imageUrl: p.imageUrl,
+      galleryImageUrls: p.galleryImageUrls || [],
       client: p.client,
       year: p.year,
       projectUrl: p.projectUrl,
@@ -248,6 +251,14 @@ export default function PortfolioManager() {
               hint="4:3 ratio recommended · e.g. 1200 × 900"
               value={form.imageUrl}
               onChange={(url) => setForm({ ...form, imageUrl: url })}
+            />
+
+            <GalleryUpload
+              category="portfolio"
+              label="Gallery images"
+              hint="Optional · extra images shown on the project page. Drag to add several at once; reorder or remove below."
+              value={form.galleryImageUrls || []}
+              onChange={(urls) => setForm({ ...form, galleryImageUrls: urls })}
             />
 
             <div>
