@@ -7,9 +7,9 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   heroEyebrow: "Millennia Works",
   heroTitleLine1: "From Idea",
   heroTitleLine2: "To Empire.",
-  heroSubtitle: "Premium brand, content, and digital agency for founders building what lasts.",
-  heroCtaPrimaryLabel: "Start a project",
-  heroCtaSecondaryLabel: "View our work",
+  heroSubtitle: "A studio of specialists — design, publishing, AI content, and development — working as one team to build brands that last.",
+  heroCtaPrimaryLabel: "Start a Project",
+  heroCtaSecondaryLabel: "See the Work",
 
   heroMediaType: "color",
   heroVideoUrl: "",
@@ -18,11 +18,11 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   heroOverlayOpacity: 60,
 
   aboutEyebrow: "Who we are",
-  aboutTitle: "We build the digital infrastructure behind ambitious brands.",
-  aboutBody: "Millennia Works is a full-service creative and digital agency built for founders who refuse to compete on price. We combine brand strategy, AI-powered content, world-class development, and sharp marketing into a single, integrated practice — so every piece of your empire moves in the same direction.",
+  aboutTitle: "A team of specialists.",
+  aboutBody: "Millennia Works is built from experts across design, publishing, AI, and technology — each bringing years of their own craft, now working under one name. When you work with Millennia Works, you get all of it: the right specialist for every part of the job, coordinated as one.",
 
-  contactCtaHeadline: "Ready to build your empire?",
-  contactCtaSubhead: "Tell us about what you're building.",
+  contactCtaHeadline: "Let's build something that lasts.",
+  contactCtaSubhead: "Tell us what you're building. One team, ready for every part of it.",
   contactCtaButtonLabel: "Send inquiry",
   responseTimePromise: "We respond within 24 hours.",
   whatsappNumber: "",

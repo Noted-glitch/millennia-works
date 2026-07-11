@@ -14,25 +14,12 @@ import { SiteNav } from "@/components/SiteNav";
 import { SiteFooter } from "@/components/SiteFooter";
 
 const servicePlaceholders = [
-  { tag: "01", title: "Brand & Creative", shortDescription: "Identity systems, logos, visual language, and brand strategy that signal authority from first impression." },
-  { tag: "02", title: "AI Content & Media", shortDescription: "AI-powered UGC, influencer models, product videos, book trailers, music videos, and cinematic content." },
-  { tag: "03", title: "Web & App Development", shortDescription: "Custom websites and web apps built with modern stacks. Owned, scalable, and built for performance." },
-  { tag: "04", title: "Digital Marketing", shortDescription: "Email campaigns, social media strategy, content marketing, and paid ads that convert ambition into revenue." },
-  { tag: "05", title: "Publishing & Books", shortDescription: "Writing, editing, formatting, interior design, publishing, and sales optimization for authors and brands." },
-  { tag: "06", title: "Apps & Games", shortDescription: "Native and web-based apps, plus original games. From MVP to launch, ready for app stores." },
-];
-
-const testimonialPlaceholders = [
-  {
-    quote: "Working with Millennia Works elevated our brand beyond what we thought possible.",
-    name: "Client Name",
-    role: "Founder, Coming Soon",
-  },
-  {
-    quote: "The level of craft and strategic thinking we received was second to none.",
-    name: "Client Name",
-    role: "CEO, Coming Soon",
-  },
+  { tag: "01", title: "Brand & Creative", shortDescription: "Identity, design, and the visual language that makes a brand recognizable." },
+  { tag: "02", title: "AI Content & Media", shortDescription: "AI-generated personas, imagery, and media, built for consistency and scale." },
+  { tag: "03", title: "Publishing & Books", shortDescription: "Cover design, interior layout, and full production for print and digital." },
+  { tag: "04", title: "Web & App Development", shortDescription: "Sites and applications built to perform and to last." },
+  { tag: "05", title: "Digital Marketing", shortDescription: "Reaching the right audience and turning attention into growth." },
+  { tag: "06", title: "Apps & Games", shortDescription: "Interactive products from concept to launch." },
 ];
 
 export default function Home() {
@@ -173,11 +160,28 @@ export default function Home() {
           <div className="max-w-5xl mx-auto pt-6 border-t border-gold/20 flex justify-center gap-6 md:gap-10 flex-wrap text-[10px] tracking-[0.3em] text-taupe font-[family-name:var(--font-montserrat)]">
             <span>BRAND</span>
             <span>AI MEDIA</span>
+            <span>PUBLISHING</span>
             <span>WEB</span>
             <span>MARKETING</span>
-            <span>PUBLISHING</span>
             <span>APPS</span>
           </div>
+        </motion.div>
+      </section>
+
+      <section id="positioning" className="py-24 px-6 border-t border-gold/10">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="max-w-3xl mx-auto text-center"
+        >
+          <h2 className="font-[family-name:var(--font-playfair)] text-3xl md:text-4xl font-normal mb-8 leading-tight">
+            One team. <span className="text-gold italic">Every discipline.</span>
+          </h2>
+          <p className="text-champagne/80 text-base md:text-lg leading-relaxed">
+            Most projects don&apos;t fit neatly into one skill set. A book needs a cover, an interior, and a launch. A brand needs an identity, a website, and content that carries it. Millennia Works brings the specialists for each of those under one roof — so you brief one team, not five freelancers, and everything moves in the same direction.
+          </p>
         </motion.div>
       </section>
 
@@ -192,8 +196,8 @@ export default function Home() {
           >
             <p className="text-xs tracking-[0.4em] uppercase text-gold mb-4 font-[family-name:var(--font-montserrat)]">What we do</p>
             <h2 className="font-[family-name:var(--font-playfair)] text-4xl md:text-5xl font-normal">
-              Six disciplines.<br />
-              <span className="text-gold italic">One vision.</span>
+              Every discipline,<br />
+              <span className="text-gold italic">one studio.</span>
             </h2>
           </motion.div>
 
@@ -252,26 +256,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="about" className="py-24 px-6 border-t border-gold/10">
-        <div className="max-w-4xl mx-auto text-center">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.97 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.9, ease: "easeOut" }}
-          >
-            <p className="text-xs tracking-[0.4em] uppercase text-gold mb-6 font-[family-name:var(--font-montserrat)]">{settings.aboutEyebrow}</p>
-            <h2 className="font-[family-name:var(--font-playfair)] text-4xl md:text-5xl font-normal mb-8 leading-tight">
-              {settings.aboutTitle}
-            </h2>
-            <p className="text-champagne/80 text-base md:text-lg leading-relaxed mb-8 max-w-2xl mx-auto">
-              {settings.aboutBody}
-            </p>
-            <a href="#contact" className="inline-block text-gold text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] border-b border-gold pb-1 hover:text-pearl hover:border-pearl transition-colors">Learn more →</a>
-          </motion.div>
-        </div>
-      </section>
-
+      {(projectsLoading || featuredProjects.length > 0) && (
       <section id="work" className="py-24 px-6 border-t border-gold/10">
         <div className="max-w-7xl mx-auto">
           <motion.div
@@ -282,25 +267,16 @@ export default function Home() {
             className="text-center mb-16"
           >
             <p className="text-xs tracking-[0.4em] uppercase text-gold mb-4 font-[family-name:var(--font-montserrat)]">Selected work</p>
-            <h2 className="font-[family-name:var(--font-playfair)] text-4xl md:text-5xl font-normal">
-              Work that speaks<br />
-              <span className="text-gold italic">for itself.</span>
+            <h2 className="font-[family-name:var(--font-playfair)] text-4xl md:text-5xl font-normal mb-5">
+              Selected work.
             </h2>
+            <p className="text-champagne/80 text-base md:text-lg">Real projects, delivered end to end.</p>
           </motion.div>
 
           {projectsLoading ? (
   <div className="grid md:grid-cols-3 gap-6">
     {Array.from({ length: 3 }).map((_, i) => (
       <div key={i} className="aspect-[4/5] skeleton rounded" />
-    ))}
-  </div>
-) : featuredProjects.length === 0 ? (
-  <div className="grid md:grid-cols-3 gap-6">
-    {[1, 2, 3].map((i) => (
-      <div key={i} className="aspect-[4/5] bg-graphite border border-gold/10 flex flex-col justify-end p-6">
-        <p className="text-xs tracking-widest text-gold mb-2 font-[family-name:var(--font-montserrat)]">Coming Soon</p>
-        <h3 className="font-[family-name:var(--font-playfair)] text-2xl text-champagne/60">In production</h3>
-      </div>
     ))}
   </div>
 ) : (
@@ -342,7 +318,49 @@ export default function Home() {
           )}
         </div>
       </section>
+      )}
 
+      <section id="why" className="py-24 px-6 border-t border-gold/10">
+        <div className="max-w-4xl mx-auto text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+          >
+            <p className="text-xs tracking-[0.4em] uppercase text-gold mb-6 font-[family-name:var(--font-montserrat)]">Why one team</p>
+            <h2 className="font-[family-name:var(--font-playfair)] text-4xl md:text-5xl font-normal mb-8 leading-tight">
+              Why a studio, not a<br />
+              <span className="text-gold italic">scatter of freelancers.</span>
+            </h2>
+            <p className="text-champagne/80 text-base md:text-lg leading-relaxed max-w-2xl mx-auto">
+              Hiring separate specialists means managing separate people, timelines, and standards — and hoping they add up to something coherent. With Millennia Works, the specialists already work together. The person designing your cover talks to the person formatting your interior. The brand designer and the developer share one vision. You get the depth of a full team with the simplicity of a single point of contact.
+            </p>
+          </motion.div>
+        </div>
+      </section>
+
+      <section id="about" className="py-24 px-6 border-t border-gold/10">
+        <div className="max-w-4xl mx-auto text-center">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.97 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.9, ease: "easeOut" }}
+          >
+            <p className="text-xs tracking-[0.4em] uppercase text-gold mb-6 font-[family-name:var(--font-montserrat)]">{settings.aboutEyebrow}</p>
+            <h2 className="font-[family-name:var(--font-playfair)] text-4xl md:text-5xl font-normal mb-8 leading-tight">
+              {settings.aboutTitle}
+            </h2>
+            <p className="text-champagne/80 text-base md:text-lg leading-relaxed mb-8 max-w-2xl mx-auto">
+              {settings.aboutBody}
+            </p>
+            <a href="#contact" className="inline-block text-gold text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] border-b border-gold pb-1 hover:text-pearl hover:border-pearl transition-colors">Start a project →</a>
+          </motion.div>
+        </div>
+      </section>
+
+      {(testimonialsLoading || featuredTestimonials.length > 0) && (
       <section className="py-24 px-6 border-t border-gold/10 bg-graphite/30">
         <div className="max-w-5xl mx-auto">
           <motion.div
@@ -371,28 +389,6 @@ export default function Home() {
                     <div className="skeleton h-3 w-24 rounded" />
                   </div>
                 </div>
-              ))}
-            </div>
-          ) : featuredTestimonials.length === 0 ? (
-            <div className="grid md:grid-cols-2 gap-8">
-              {testimonialPlaceholders.map((t, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.6, delay: i * 0.15 }}
-                  className="relative bg-graphite/20 border border-gold/20 p-8 md:p-10 overflow-hidden"
-                >
-                  <span className="absolute top-4 right-6 text-gold/10 font-[family-name:var(--font-playfair)] leading-none select-none pointer-events-none" style={{ fontSize: "8rem" }}>&ldquo;</span>
-                  <div className="relative">
-                    <p className="text-champagne text-base md:text-lg leading-relaxed italic font-[family-name:var(--font-playfair)] mb-8">{t.quote}</p>
-                    <div className="border-t border-gold/20 pt-5">
-                      <p className="text-pearl text-sm font-medium">{t.name}</p>
-                      <p className="text-taupe text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] mt-1">{t.role}</p>
-                    </div>
-                  </div>
-                </motion.div>
               ))}
             </div>
           ) : (
@@ -426,6 +422,7 @@ export default function Home() {
           )}
         </div>
       </section>
+      )}
 
       <section id="contact" className="py-32 px-6 border-t border-gold/10">
         <motion.div
