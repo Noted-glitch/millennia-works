@@ -74,9 +74,9 @@ export function BlogPostContent({ slug }: { slug: string }) {
 
       {/* Reading progress bar — fixed just below the nav */}
       {!loading && post && (
-        <div className="fixed top-[80px] left-0 right-0 z-40 h-px bg-gold/10">
+        <div className="fixed top-[80px] left-0 right-0 z-40 h-px bg-accent/10">
           <div
-            className="h-full bg-gold"
+            className="h-full bg-accent"
             style={{ width: `${scrollProgress * 100}%`, transition: "width 0.1s linear" }}
           />
         </div>
@@ -101,17 +101,17 @@ export function BlogPostContent({ slug }: { slug: string }) {
       ) : notFound || !post ? (
         <section className="min-h-screen flex items-center justify-center px-6 pt-20">
           <div className="text-center max-w-md">
-            <p className="text-xs tracking-[0.4em] uppercase text-gold mb-6 font-[family-name:var(--font-montserrat)]">Not found</p>
+            <p className="text-xs tracking-[0.4em] uppercase text-accent mb-6 font-[family-name:var(--font-montserrat)]">Not found</p>
             <h1 className="font-[family-name:var(--font-playfair)] text-4xl md:text-5xl font-normal mb-6">Post not found.</h1>
             <p className="text-champagne/70 mb-8">This post may have been moved or unpublished.</p>
-            <a href="/blog" className="inline-block text-gold text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] border-b border-gold pb-1 hover:text-pearl hover:border-pearl transition-colors">← Back to all posts</a>
+            <a href="/blog" className="inline-block text-accent text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] border-b border-accent pb-1 hover:text-pearl hover:border-pearl transition-colors">← Back to all posts</a>
           </div>
         </section>
       ) : (
         <>
           {post.status === "draft" && (
-            <div className="bg-gold/10 border-b border-gold/30 px-6 py-3 mt-20 text-center">
-              <p className="text-gold text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)]">Draft preview · only visible to signed-in admin</p>
+            <div className="bg-accent/10 border-b border-accent/30 px-6 py-3 mt-20 text-center">
+              <p className="text-accent text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)]">Draft preview · only visible to signed-in admin</p>
             </div>
           )}
 
@@ -122,7 +122,7 @@ export function BlogPostContent({ slug }: { slug: string }) {
               transition={{ duration: 0.8 }}
               className="max-w-3xl mx-auto text-center mb-12"
             >
-              <p className="text-xs tracking-[0.4em] uppercase text-gold mb-6 font-[family-name:var(--font-montserrat)]">{post.category}</p>
+              <p className="text-xs tracking-[0.4em] uppercase text-accent mb-6 font-[family-name:var(--font-montserrat)]">{post.category}</p>
               <h1 className="font-[family-name:var(--font-playfair)] text-4xl md:text-6xl font-normal leading-tight mb-8">{post.title}</h1>
               <div className="flex items-center justify-center gap-3 text-taupe text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] flex-wrap">
                 <span>{post.author}</span>
@@ -139,7 +139,7 @@ export function BlogPostContent({ slug }: { slug: string }) {
                 transition={{ duration: 1, delay: 0.2 }}
                 className="max-w-5xl mx-auto mb-16"
               >
-                <div className="aspect-[16/9] bg-graphite overflow-hidden border border-gold/10">
+                <div className="aspect-[16/9] bg-graphite overflow-hidden border border-accent/10">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={post.coverImageUrl} alt={post.title} className="w-full h-full object-cover" />
                 </div>
@@ -160,14 +160,14 @@ export function BlogPostContent({ slug }: { slug: string }) {
                     h2: ({ children }) => <h2 className="font-[family-name:var(--font-playfair)] text-2xl md:text-3xl text-pearl mt-10 mb-5 leading-tight">{children}</h2>,
                     h3: ({ children }) => <h3 className="font-[family-name:var(--font-playfair)] text-xl md:text-2xl text-pearl mt-8 mb-4 leading-tight">{children}</h3>,
                     p: ({ children }) => <p className="mb-6">{children}</p>,
-                    a: ({ href, children }) => <a href={href} className="text-gold underline decoration-gold/40 hover:decoration-gold transition-colors">{children}</a>,
+                    a: ({ href, children }) => <a href={href} className="text-accent underline decoration-accent/40 hover:decoration-accent transition-colors">{children}</a>,
                     ul: ({ children }) => <ul className="list-disc pl-6 mb-6 space-y-2">{children}</ul>,
                     ol: ({ children }) => <ol className="list-decimal pl-6 mb-6 space-y-2">{children}</ol>,
                     li: ({ children }) => <li className="pl-1">{children}</li>,
-                    blockquote: ({ children }) => <blockquote className="border-l-2 border-gold/40 pl-6 italic text-champagne/90 font-[family-name:var(--font-playfair)] my-8">{children}</blockquote>,
-                    code: ({ children }) => <code className="bg-graphite text-gold px-1.5 py-0.5 rounded text-sm font-mono">{children}</code>,
-                    pre: ({ children }) => <pre className="bg-graphite border border-gold/10 p-4 rounded overflow-x-auto mb-6 text-sm">{children}</pre>,
-                    hr: () => <hr className="border-gold/20 my-12" />,
+                    blockquote: ({ children }) => <blockquote className="border-l-2 border-accent/40 pl-6 italic text-champagne/90 font-[family-name:var(--font-playfair)] my-8">{children}</blockquote>,
+                    code: ({ children }) => <code className="bg-graphite text-accent px-1.5 py-0.5 rounded text-sm font-mono">{children}</code>,
+                    pre: ({ children }) => <pre className="bg-graphite border border-accent/10 p-4 rounded overflow-x-auto mb-6 text-sm">{children}</pre>,
+                    hr: () => <hr className="border-accent/20 my-12" />,
                     strong: ({ children }) => <strong className="text-pearl font-medium">{children}</strong>,
                   }}
                 >
@@ -175,15 +175,15 @@ export function BlogPostContent({ slug }: { slug: string }) {
                 </ReactMarkdown>
               </div>
 
-              <div className="mt-16 pt-8 border-t border-gold/10 text-center">
-                <a href="/blog" className="inline-block text-gold text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] border-b border-gold pb-1 hover:text-pearl hover:border-pearl transition-colors">← Back to all posts</a>
+              <div className="mt-16 pt-8 border-t border-accent/10 text-center">
+                <a href="/blog" className="inline-block text-accent text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] border-b border-accent pb-1 hover:text-pearl hover:border-pearl transition-colors">← Back to all posts</a>
               </div>
             </motion.div>
           </article>
 
           {/* ── Related posts ── */}
           {related.length > 0 && (
-            <section className="py-20 px-6 border-t border-gold/10">
+            <section className="py-20 px-6 border-t border-accent/10">
               <div className="max-w-5xl mx-auto">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
@@ -192,8 +192,8 @@ export function BlogPostContent({ slug }: { slug: string }) {
                   transition={{ duration: 0.8 }}
                   className="mb-10"
                 >
-                  <p className="text-xs tracking-[0.4em] uppercase text-gold mb-2 font-[family-name:var(--font-montserrat)]">Continue reading</p>
-                  <h2 className="font-[family-name:var(--font-playfair)] text-3xl font-normal">More from the <span className="text-gold italic">studio.</span></h2>
+                  <p className="text-xs tracking-[0.4em] uppercase text-accent mb-2 font-[family-name:var(--font-montserrat)]">Continue reading</p>
+                  <h2 className="font-[family-name:var(--font-playfair)] text-3xl font-normal">More from the <span className="text-accent italic">studio.</span></h2>
                 </motion.div>
                 <div className="grid md:grid-cols-3 gap-8">
                   {related.map((p, i) => (
@@ -205,7 +205,7 @@ export function BlogPostContent({ slug }: { slug: string }) {
                       whileHover={{ y: -6, transition: { duration: 0.25, ease: "easeOut" } }}
                       viewport={{ once: true }}
                       transition={{ duration: 0.6, delay: i * 0.1 }}
-                      className="group flex flex-col border border-gold/10 hover:border-gold/40 transition-colors"
+                      className="group flex flex-col border border-accent/10 hover:border-accent/40 transition-colors"
                     >
                       {p.coverImageUrl ? (
                         <div className="aspect-[16/10] bg-graphite overflow-hidden">
@@ -216,8 +216,8 @@ export function BlogPostContent({ slug }: { slug: string }) {
                         <div className="aspect-[16/10] bg-graphite" />
                       )}
                       <div className="p-5 flex-1 flex flex-col">
-                        <p className="text-gold text-[10px] tracking-widest uppercase mb-2 font-[family-name:var(--font-montserrat)]">{p.category}</p>
-                        <h3 className="font-[family-name:var(--font-playfair)] text-lg mb-2 group-hover:text-gold transition-colors leading-tight">{p.title}</h3>
+                        <p className="text-accent text-[10px] tracking-widest uppercase mb-2 font-[family-name:var(--font-montserrat)]">{p.category}</p>
+                        <h3 className="font-[family-name:var(--font-playfair)] text-lg mb-2 group-hover:text-accent transition-colors leading-tight">{p.title}</h3>
                         <p className="text-taupe text-[10px] tracking-widest uppercase font-[family-name:var(--font-montserrat)] mt-auto">
                           {p.publishedAt ? new Date(p.publishedAt).toLocaleDateString(undefined, { year: "numeric", month: "short" }) : ""}
                         </p>

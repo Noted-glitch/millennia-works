@@ -74,22 +74,22 @@ export function ServiceContent({ slug }: { slug: string }) {
       ) : notFound || !service ? (
         <section className="min-h-screen flex items-center justify-center px-6 pt-20">
           <div className="text-center max-w-md">
-            <p className="text-xs tracking-[0.4em] uppercase text-gold mb-6 font-[family-name:var(--font-montserrat)]">Not found</p>
+            <p className="text-xs tracking-[0.4em] uppercase text-accent mb-6 font-[family-name:var(--font-montserrat)]">Not found</p>
             <h1 className="font-[family-name:var(--font-playfair)] text-4xl md:text-5xl font-normal mb-6">Service not found.</h1>
             <p className="text-champagne/70 mb-8">This service may have been moved or removed.</p>
-            <a href="/#services" className="inline-block text-gold text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] border-b border-gold pb-1 hover:text-pearl hover:border-pearl transition-colors">← All services</a>
+            <a href="/#services" className="inline-block text-accent text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] border-b border-accent pb-1 hover:text-pearl hover:border-pearl transition-colors">← All services</a>
           </div>
         </section>
       ) : (
         <>
-          <section className="pt-32 pb-16 px-6 border-b border-gold/10">
+          <section className="pt-32 pb-16 px-6 border-b border-accent/10">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
               className="max-w-4xl mx-auto text-center"
             >
-              <p className="text-xs tracking-[0.4em] uppercase text-gold mb-6 font-[family-name:var(--font-montserrat)]">{service.tag} · {service.category}</p>
+              <p className="text-xs tracking-[0.4em] uppercase text-accent mb-6 font-[family-name:var(--font-montserrat)]">{service.tag} · {service.category}</p>
               <h1 className="font-[family-name:var(--font-playfair)] text-5xl md:text-7xl font-normal leading-tight mb-8">{service.title}</h1>
               <p className="text-champagne/80 text-base md:text-lg max-w-2xl mx-auto leading-relaxed">{service.longDescription}</p>
             </motion.div>
@@ -103,7 +103,7 @@ export function ServiceContent({ slug }: { slug: string }) {
                 transition={{ duration: 1, delay: 0.2 }}
                 className="max-w-5xl mx-auto"
               >
-                <div className="aspect-[16/9] bg-graphite overflow-hidden border border-gold/10">
+                <div className="aspect-[16/9] bg-graphite overflow-hidden border border-accent/10">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={service.coverImageUrl} alt={service.title} className="w-full h-full object-cover" />
                 </div>
@@ -112,7 +112,7 @@ export function ServiceContent({ slug }: { slug: string }) {
           )}
 
           {service.bullets.length > 0 && (
-            <section className="py-20 px-6 border-t border-gold/10">
+            <section className="py-20 px-6 border-t border-accent/10">
               <div className="max-w-4xl mx-auto">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
@@ -121,8 +121,8 @@ export function ServiceContent({ slug }: { slug: string }) {
                   transition={{ duration: 0.8 }}
                   className="text-center mb-12"
                 >
-                  <p className="text-xs tracking-[0.4em] uppercase text-gold mb-4 font-[family-name:var(--font-montserrat)]">What&apos;s included</p>
-                  <h2 className="font-[family-name:var(--font-playfair)] text-3xl md:text-4xl font-normal">Inside this <span className="text-gold italic">engagement.</span></h2>
+                  <p className="text-xs tracking-[0.4em] uppercase text-accent mb-4 font-[family-name:var(--font-montserrat)]">What&apos;s included</p>
+                  <h2 className="font-[family-name:var(--font-playfair)] text-3xl md:text-4xl font-normal">Inside this <span className="text-accent italic">engagement.</span></h2>
                 </motion.div>
                 <ul className="grid md:grid-cols-2 gap-x-8 gap-y-4 max-w-3xl mx-auto">
                   {service.bullets.map((b, i) => (
@@ -134,7 +134,7 @@ export function ServiceContent({ slug }: { slug: string }) {
                       transition={{ duration: 0.5, delay: i * 0.05 }}
                       className="flex items-start gap-3 text-champagne text-base leading-relaxed"
                     >
-                      <span className="text-gold text-sm mt-1.5 shrink-0">◆</span>
+                      <span className="text-accent text-sm mt-1.5 shrink-0">◆</span>
                       <span>{b}</span>
                     </motion.li>
                   ))}
@@ -144,7 +144,7 @@ export function ServiceContent({ slug }: { slug: string }) {
           )}
 
           {projects.length > 0 && (
-            <section className="py-20 px-6 border-t border-gold/10">
+            <section className="py-20 px-6 border-t border-accent/10">
               <div className="max-w-7xl mx-auto">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
@@ -153,18 +153,18 @@ export function ServiceContent({ slug }: { slug: string }) {
                   transition={{ duration: 0.8 }}
                   className="text-center mb-12"
                 >
-                  <p className="text-xs tracking-[0.4em] uppercase text-gold mb-4 font-[family-name:var(--font-montserrat)]">Selected work</p>
-                  <h2 className="font-[family-name:var(--font-playfair)] text-3xl md:text-4xl font-normal">In this <span className="text-gold italic">discipline.</span></h2>
+                  <p className="text-xs tracking-[0.4em] uppercase text-accent mb-4 font-[family-name:var(--font-montserrat)]">Selected work</p>
+                  <h2 className="font-[family-name:var(--font-playfair)] text-3xl md:text-4xl font-normal">In this <span className="text-accent italic">discipline.</span></h2>
                 </motion.div>
                 <div className="grid md:grid-cols-3 gap-6">
                   {projects.map((p, i) => {
                     const card = (
-                      <div className="aspect-[4/5] bg-graphite border border-gold/10 relative overflow-hidden hover:border-gold/40 transition-colors cursor-pointer group">
+                      <div className="aspect-[4/5] bg-graphite border border-accent/10 relative overflow-hidden hover:border-accent/40 transition-colors cursor-pointer group">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         {p.imageUrl && <img src={p.imageUrl} alt={p.title} className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-opacity" />}
                         <div className="absolute inset-0 bg-gradient-to-t from-navy via-navy/50 to-transparent" />
                         <div className="absolute bottom-0 left-0 right-0 p-6">
-                          <p className="text-xs tracking-widest text-gold mb-2 font-[family-name:var(--font-montserrat)]">{p.category}</p>
+                          <p className="text-xs tracking-widest text-accent mb-2 font-[family-name:var(--font-montserrat)]">{p.category}</p>
                           <h3 className="font-[family-name:var(--font-playfair)] text-2xl text-pearl mb-1">{p.title}</h3>
                           {p.client && <p className="text-taupe text-xs">{p.client} · {p.year}</p>}
                         </div>
@@ -190,7 +190,7 @@ export function ServiceContent({ slug }: { slug: string }) {
           )}
 
           {testimonials.length > 0 && (
-            <section className="py-20 px-6 border-t border-gold/10 bg-graphite/30">
+            <section className="py-20 px-6 border-t border-accent/10 bg-graphite/30">
               <div className="max-w-5xl mx-auto">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
@@ -199,8 +199,8 @@ export function ServiceContent({ slug }: { slug: string }) {
                   transition={{ duration: 0.8 }}
                   className="text-center mb-12"
                 >
-                  <p className="text-xs tracking-[0.4em] uppercase text-gold mb-4 font-[family-name:var(--font-montserrat)]">In their words</p>
-                  <h2 className="font-[family-name:var(--font-playfair)] text-3xl md:text-4xl font-normal">Trusted by <span className="text-gold italic">founders.</span></h2>
+                  <p className="text-xs tracking-[0.4em] uppercase text-accent mb-4 font-[family-name:var(--font-montserrat)]">In their words</p>
+                  <h2 className="font-[family-name:var(--font-playfair)] text-3xl md:text-4xl font-normal">Trusted by <span className="text-accent italic">founders.</span></h2>
                 </motion.div>
                 <div className="grid md:grid-cols-2 gap-8">
                   {testimonials.map((t, i) => (
@@ -210,12 +210,12 @@ export function ServiceContent({ slug }: { slug: string }) {
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true }}
                       transition={{ duration: 0.6, delay: i * 0.15 }}
-                      className="relative bg-graphite/20 border border-gold/20 p-8 md:p-10 overflow-hidden"
+                      className="relative bg-graphite/20 border border-accent/20 p-8 md:p-10 overflow-hidden"
                     >
-                      <span className="absolute top-4 right-6 text-gold/10 font-[family-name:var(--font-playfair)] leading-none select-none pointer-events-none" style={{ fontSize: "8rem" }}>&ldquo;</span>
+                      <span className="absolute top-4 right-6 text-accent/10 font-[family-name:var(--font-playfair)] leading-none select-none pointer-events-none" style={{ fontSize: "8rem" }}>&ldquo;</span>
                       <div className="relative">
                         <p className="text-champagne text-base md:text-lg leading-relaxed italic font-[family-name:var(--font-playfair)] mb-8">{t.quote}</p>
-                        <div className="border-t border-gold/20 pt-5">
+                        <div className="border-t border-accent/20 pt-5">
                           <p className="text-pearl text-sm font-medium">{t.clientName}</p>
                           <p className="text-taupe text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] mt-1">{t.role}{t.role && t.company && " · "}{t.company}</p>
                         </div>
@@ -228,7 +228,7 @@ export function ServiceContent({ slug }: { slug: string }) {
           )}
 
           {posts.length > 0 && (
-            <section className="py-20 px-6 border-t border-gold/10">
+            <section className="py-20 px-6 border-t border-accent/10">
               <div className="max-w-7xl mx-auto">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
@@ -237,8 +237,8 @@ export function ServiceContent({ slug }: { slug: string }) {
                   transition={{ duration: 0.8 }}
                   className="text-center mb-12"
                 >
-                  <p className="text-xs tracking-[0.4em] uppercase text-gold mb-4 font-[family-name:var(--font-montserrat)]">Field notes</p>
-                  <h2 className="font-[family-name:var(--font-playfair)] text-3xl md:text-4xl font-normal">Further <span className="text-gold italic">reading.</span></h2>
+                  <p className="text-xs tracking-[0.4em] uppercase text-accent mb-4 font-[family-name:var(--font-montserrat)]">Field notes</p>
+                  <h2 className="font-[family-name:var(--font-playfair)] text-3xl md:text-4xl font-normal">Further <span className="text-accent italic">reading.</span></h2>
                 </motion.div>
                 <div className="grid md:grid-cols-3 gap-8">
                   {posts.map((p, i) => (
@@ -249,7 +249,7 @@ export function ServiceContent({ slug }: { slug: string }) {
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true }}
                       transition={{ duration: 0.6, delay: i * 0.1 }}
-                      className="group flex flex-col border border-gold/10 hover:border-gold/40 transition-colors"
+                      className="group flex flex-col border border-accent/10 hover:border-accent/40 transition-colors"
                     >
                       {p.coverImageUrl ? (
                         <div className="aspect-[16/10] bg-graphite overflow-hidden">
@@ -260,7 +260,7 @@ export function ServiceContent({ slug }: { slug: string }) {
                         <div className="aspect-[16/10] bg-graphite" />
                       )}
                       <div className="p-6 flex-1 flex flex-col">
-                        <h3 className="font-[family-name:var(--font-playfair)] text-xl mb-3 group-hover:text-gold transition-colors leading-tight">{p.title}</h3>
+                        <h3 className="font-[family-name:var(--font-playfair)] text-xl mb-3 group-hover:text-accent transition-colors leading-tight">{p.title}</h3>
                         <p className="text-champagne/70 text-sm leading-relaxed mb-4 line-clamp-3">{p.excerpt}</p>
                         <p className="text-taupe text-[10px] tracking-widest uppercase font-[family-name:var(--font-montserrat)] mt-auto">{formatDate(p.publishedAt)}</p>
                       </div>
@@ -271,7 +271,7 @@ export function ServiceContent({ slug }: { slug: string }) {
             </section>
           )}
 
-          <section className="py-24 px-6 border-t border-gold/10">
+          <section className="py-24 px-6 border-t border-accent/10">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -279,11 +279,11 @@ export function ServiceContent({ slug }: { slug: string }) {
               transition={{ duration: 0.8 }}
               className="max-w-3xl mx-auto text-center"
             >
-              <p className="text-xs tracking-[0.4em] uppercase text-gold mb-6 font-[family-name:var(--font-montserrat)]">Let&apos;s build</p>
+              <p className="text-xs tracking-[0.4em] uppercase text-accent mb-6 font-[family-name:var(--font-montserrat)]">Let&apos;s build</p>
               <h2 className="font-[family-name:var(--font-playfair)] text-3xl md:text-5xl font-normal mb-8 leading-tight">
-                Ready for <span className="text-gold italic">{service.title.toLowerCase()}?</span>
+                Ready for <span className="text-accent italic">{service.title.toLowerCase()}?</span>
               </h2>
-              <a href="/#contact" className="inline-block bg-gold text-navy text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] px-10 py-4 rounded hover:bg-pearl transition-colors">Start a project</a>
+              <a href="/#contact" className="inline-block bg-accent text-navy text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] px-10 py-4 rounded hover:bg-pearl transition-colors">Start a project</a>
             </motion.div>
           </section>
         </>

@@ -7,6 +7,18 @@
   --color-taupe: #8B7355;
   --color-champagne: #E8E0D0;
   --color-graphite: #2C2C2C;
+
+  /*
+   * Semantic accent tokens.
+   * `--color-gold` is the MASTER BRAND color (logo, nav, footer, admin) and must
+   * never be reassigned. `--color-accent` is the per-surface accent: it defaults
+   * to master gold here, and a future per-service theme can override it for a
+   * subtree (see the [data-theme] pattern below). Infrastructure only — every
+   * value below is gold, so nothing changes visually yet.
+   */
+  --color-accent: var(--color-gold);
+  --color-accent-hover: var(--color-gold);
+  --color-accent-tint: var(--color-gold);
 }
 
 @theme inline {
@@ -16,10 +28,34 @@
   --color-taupe: var(--color-taupe);
   --color-champagne: var(--color-champagne);
   --color-graphite: var(--color-graphite);
+  /* Exposes text-accent / bg-accent / border-accent (+ opacity, e.g. accent/20). */
+  --color-accent: var(--color-accent);
+  --color-accent-hover: var(--color-accent-hover);
+  --color-accent-tint: var(--color-accent-tint);
   --font-playfair: var(--font-playfair);
   --font-montserrat: var(--font-montserrat);
   --font-inter: var(--font-inter);
 }
+
+/*
+ * Per-service theming hook — MECHANISM ONLY, no themes defined yet.
+ *
+ * A service page/layout wrapper can set a data-theme attribute; a rule here then
+ * overrides the accent tokens for that subtree, and every component using
+ * text-accent / bg-accent / border-accent re-skins automatically via the CSS
+ * cascade. Master-brand chrome (nav, footer, logo) and admin use the fixed
+ * `gold` utilities, so they are unaffected by any theme.
+ *
+ * A future task will add rules of the form (DO NOT add these yet — keep gold):
+ *
+ *   [data-theme="<service>"] {
+ *     --color-accent:       <hex>;
+ *     --color-accent-hover: <hex>;
+ *     --color-accent-tint:  <hex>;
+ *   }
+ *
+ * Until such rules exist, all subtrees inherit the gold defaults above.
+ */
 
 html {
   scroll-behavior: smooth;
