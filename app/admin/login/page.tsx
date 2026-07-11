@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword, setPersistence, browserSessionPersistence } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { motion } from "framer-motion";
 
@@ -19,6 +19,8 @@ export default function AdminLogin() {
     setLoading(true);
 
     try {
+      // Session-scoped: closing the browser ends the session and requires re-login.
+      await setPersistence(auth, browserSessionPersistence);
       await signInWithEmailAndPassword(auth, email, password);
       router.push("/admin");
     } catch (err: unknown) {
