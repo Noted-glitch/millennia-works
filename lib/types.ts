@@ -22,6 +22,7 @@ export const PROJECT_CATEGORIES = [
   "Digital Marketing",
   "Publishing & Books",
   "Apps & Games",
+  "3D & Motion",
 ] as const;
 
 export interface Testimonial {

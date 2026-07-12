@@ -129,6 +129,17 @@ const DEFAULT_SERVICES: Omit<Service, "id" | "createdAt" | "updatedAt">[] = [
     featured: true,
     slug: "apps-games",
   },
+  {
+    title: "3D & Motion",
+    category: "3D & Motion",
+    tag: "07",
+    shortDescription: "3D design, animation, and motion graphics that bring a brand to life.",
+    longDescription: "From product renders and 3D scenes to animated logos and motion graphics — visuals with depth and movement, built to hold attention across every screen.",
+    bullets: [],
+    order: 6,
+    featured: true,
+    slug: "3d-motion",
+  },
 ];
 
 export async function seedDefaultServices(): Promise<number> {

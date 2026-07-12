@@ -164,6 +164,7 @@ export default function Home() {
             <span>WEB</span>
             <span>MARKETING</span>
             <span>APPS</span>
+            <span>3D &amp; MOTION</span>
           </div>
         </motion.div>
       </section>
