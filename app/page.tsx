@@ -99,6 +99,11 @@ export default function Home() {
       setInquirySubmitting(false);
     }
   }
+
+  const visibleServices = services.filter((s) => settings.servicesEnabled[s.category] !== false);
+  // The CTA tile spans whatever cells remain in the last row so the hairline grid always closes cleanly.
+  const ctaTileSpan = `${visibleServices.length % 2 === 0 ? "md:col-span-2" : ""} ${["lg:col-span-3", "lg:col-span-2", ""][visibleServices.length % 3]}`;
+
   return (
     <main className="min-h-screen bg-navy text-pearl">
       <SiteNav activeLink="home" />
@@ -234,9 +239,7 @@ export default function Home() {
             </div>
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-px bg-gold/10">
-              {services
-                .filter((s) => settings.servicesEnabled[s.category] !== false)
-                .map((service, i) => (
+              {visibleServices.map((service, i) => (
                 <motion.a
                   key={service.id}
                   href={`/${service.slug}`}
@@ -252,6 +255,19 @@ export default function Home() {
                   <p className="text-gold text-[10px] tracking-widest uppercase font-[family-name:var(--font-montserrat)] opacity-0 group-hover:opacity-100 transition-opacity">Explore →</p>
                 </motion.a>
               ))}
+              <motion.a
+                href="/services"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: visibleServices.length * 0.1 }}
+                className={`bg-navy p-8 md:p-10 flex items-center justify-center group cursor-pointer ${ctaTileSpan}`}
+              >
+                <span className="inline-flex items-center gap-3 border border-gold/30 rounded px-7 py-3.5 text-gold text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] group-hover:bg-gold group-hover:text-navy transition-colors">
+                  View all services
+                  <span aria-hidden="true" className="transition-transform group-hover:translate-x-1">→</span>
+                </span>
+              </motion.a>
             </div>
           )}
         </div>

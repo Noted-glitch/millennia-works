@@ -23,12 +23,6 @@ const nextConfig: NextConfig = {
         destination: `/${slug}`,
         permanent: true,
       })),
-      // /services (no slug) → homepage services section
-      {
-        source: "/services",
-        destination: "/#services",
-        permanent: true,
-      },
     ];
   },
 };

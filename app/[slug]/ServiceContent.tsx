@@ -77,7 +77,7 @@ export function ServiceContent({ slug }: { slug: string }) {
             <p className="text-xs tracking-[0.4em] uppercase text-accent mb-6 font-[family-name:var(--font-montserrat)]">Not found</p>
             <h1 className="font-[family-name:var(--font-playfair)] text-4xl md:text-5xl font-normal mb-6">Service not found.</h1>
             <p className="text-champagne/70 mb-8">This service may have been moved or removed.</p>
-            <a href="/#services" className="inline-block text-accent text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] border-b border-accent pb-1 hover:text-pearl hover:border-pearl transition-colors">← All services</a>
+            <a href="/services" className="inline-block text-accent text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] border-b border-accent pb-1 hover:text-pearl hover:border-pearl transition-colors">← All services</a>
           </div>
         </section>
       ) : (

@@ -8,7 +8,7 @@ import { useSettings } from "@/lib/settings-context";
 export type SiteNavActiveLink = "home" | "services" | "about" | "work" | "blog" | "contact" | null;
 
 const LINKS: { key: Exclude<SiteNavActiveLink, null>; label: string; href: string }[] = [
-  { key: "services", label: "Services", href: "/#services" },
+  { key: "services", label: "Services", href: "/services" },
   { key: "about", label: "About", href: "/#about" },
   { key: "work", label: "Work", href: "/#work" },
   { key: "blog", label: "Blog", href: "/blog" },
