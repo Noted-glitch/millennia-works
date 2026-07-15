@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Playfair_Display, Montserrat, Inter } from "next/font/google";
 import { SettingsProvider } from "@/lib/settings-context";
 import { getSettingsServer } from "@/lib/server/settings";
+import { CustomCursor } from "@/components/CustomCursor";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
@@ -102,6 +103,7 @@ export default async function RootLayout({
           }}
         />
         <SettingsProvider>{children}</SettingsProvider>
+        <CustomCursor />
         <Analytics />
       </body>
     </html>

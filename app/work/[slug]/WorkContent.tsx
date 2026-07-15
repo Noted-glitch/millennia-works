@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { getProjectBySlug, getAllProjects } from "@/lib/portfolio";
 import { slugify } from "@/lib/slug";
+import { useReveal } from "@/lib/motion";
 import { SiteNav } from "@/components/SiteNav";
 import { SiteFooter } from "@/components/SiteFooter";
 import type { Project } from "@/lib/types";
@@ -14,6 +15,7 @@ export function WorkContent({ slug }: { slug: string }) {
   const [loading, setLoading]   = useState(true);
   const [notFound, setNotFound] = useState(false);
   const [lightbox, setLightbox] = useState<number | null>(null);
+  const reveal = useReveal();
 
   useEffect(() => {
     async function load() {
@@ -55,7 +57,7 @@ export function WorkContent({ slug }: { slug: string }) {
       <SiteNav activeLink="work" />
 
       {loading ? (
-        <div className="pt-32 pb-20 px-6">
+        <div className="pt-44 md:pt-64 pb-26 md:pb-42 px-6">
           <div className="max-w-5xl mx-auto space-y-6">
             <div className="skeleton h-3 w-24 rounded" />
             <div className="skeleton h-14 w-3/4 rounded" />
@@ -71,25 +73,23 @@ export function WorkContent({ slug }: { slug: string }) {
       ) : notFound || !project ? (
         <section className="min-h-screen flex items-center justify-center px-6 pt-20">
           <div className="text-center max-w-md">
-            <p className="text-xs tracking-[0.4em] uppercase text-accent mb-6 font-[family-name:var(--font-montserrat)]">Not found</p>
-            <h1 className="font-[family-name:var(--font-playfair)] text-4xl md:text-5xl font-normal mb-6">Project not found.</h1>
+            <p className="text-xs tracking-[0.2em] uppercase text-accent mb-6 font-[family-name:var(--font-montserrat)]">Not found</p>
+            <h1 className="font-[family-name:var(--font-playfair)] text-display font-normal mb-6">Project not found.</h1>
             <p className="text-champagne/70 mb-8">This project may have been moved or removed.</p>
-            <a href="/#work" className="inline-block text-accent text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] border-b border-accent pb-1 hover:text-pearl hover:border-pearl transition-colors">← Back to work</a>
+            <a href="/#work" className="link-underline inline-block text-accent text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] hover:text-pearl transition-colors">← Back to work</a>
           </div>
         </section>
       ) : (
         <>
           {/* ── Hero ── */}
-          <section className="pt-32 pb-0 px-6">
+          <section className="pt-44 md:pt-64 pb-0 px-6">
             <div className="max-w-5xl mx-auto">
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8 }}
+                {...reveal.onMount()}
                 className="mb-10"
               >
-                <p className="text-xs tracking-[0.4em] uppercase text-accent mb-5 font-[family-name:var(--font-montserrat)]">{project.category}</p>
-                <h1 className="font-[family-name:var(--font-playfair)] text-4xl md:text-6xl font-normal leading-tight mb-6">
+                <p className="text-xs tracking-[0.2em] uppercase text-accent mb-6 font-[family-name:var(--font-montserrat)]">{project.category}</p>
+                <h1 className="font-[family-name:var(--font-playfair)] text-display font-normal mb-6">
                   {project.title}
                 </h1>
                 <div className="flex items-center gap-3 text-taupe text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] flex-wrap">
@@ -101,9 +101,7 @@ export function WorkContent({ slug }: { slug: string }) {
 
               {project.imageUrl && (
                 <motion.div
-                  initial={{ opacity: 0, scale: 0.98 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 1, delay: 0.2 }}
+                  {...reveal.mountImage()}
                   className="aspect-[16/9] bg-graphite overflow-hidden border border-accent/10"
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -114,25 +112,23 @@ export function WorkContent({ slug }: { slug: string }) {
           </section>
 
           {/* ── Content ── */}
-          <section className="py-20 px-6">
+          <section className="py-26 md:py-42 px-6">
             <div className="max-w-5xl mx-auto grid md:grid-cols-3 gap-16">
 
               {/* Description */}
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.3 }}
+                {...reveal.onMount(3)}
                 className="md:col-span-2"
               >
-                <p className="text-xs tracking-[0.4em] uppercase text-accent mb-6 font-[family-name:var(--font-montserrat)]">About the project</p>
-                <p className="text-champagne text-base md:text-lg leading-relaxed">{project.description}</p>
+                <p className="text-xs tracking-[0.2em] uppercase text-accent mb-6 font-[family-name:var(--font-montserrat)]">About the project</p>
+                <p className="text-champagne text-[17px] md:text-[19px] leading-[1.7] max-w-[65ch]">{project.description}</p>
 
                 {project.projectUrl && (
                   <a
                     href={project.projectUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 mt-10 text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] bg-accent text-navy px-7 py-3.5 rounded hover:bg-pearl transition-colors"
+                    className="btn btn-primary mt-10"
                   >
                     View live project ↗
                   </a>
@@ -141,9 +137,7 @@ export function WorkContent({ slug }: { slug: string }) {
 
               {/* Metadata sidebar */}
               <motion.aside
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8, delay: 0.4 }}
+                {...reveal.onMount(4)}
                 className="space-y-8 border-t md:border-t-0 md:border-l border-accent/10 pt-10 md:pt-0 md:pl-10"
               >
                 {project.client && (
@@ -168,17 +162,14 @@ export function WorkContent({ slug }: { slug: string }) {
 
           {/* ── Gallery ── */}
           {project.galleryImageUrls && project.galleryImageUrls.length > 0 && (
-            <section className="py-20 px-6 border-t border-accent/10">
+            <section className="py-26 md:py-42 px-6 border-t border-accent/10">
               <div className="max-w-5xl mx-auto">
                 <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.8 }}
+                  {...reveal.props()}
                   className="mb-10"
                 >
-                  <p className="text-xs tracking-[0.4em] uppercase text-accent mb-2 font-[family-name:var(--font-montserrat)]">Gallery</p>
-                  <h2 className="font-[family-name:var(--font-playfair)] text-3xl font-normal">A closer <span className="text-accent italic">look.</span></h2>
+                  <p className="text-xs tracking-[0.2em] uppercase text-accent mb-2 font-[family-name:var(--font-montserrat)]">Gallery</p>
+                  <h2 className="font-[family-name:var(--font-playfair)] text-display font-normal">A closer <span className="text-accent italic">look.</span></h2>
                 </motion.div>
 
                 <div className="grid sm:grid-cols-2 gap-4 md:gap-6">
@@ -187,19 +178,18 @@ export function WorkContent({ slug }: { slug: string }) {
                       type="button"
                       key={url}
                       onClick={() => setLightbox(i)}
-                      initial={{ opacity: 0, y: 20 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true, margin: "0px 0px -10% 0px" }}
-                      transition={{ duration: 0.6, delay: (i % 2) * 0.1 }}
-                      className="group block aspect-[4/3] bg-graphite overflow-hidden border border-accent/10 hover:border-accent/40 transition-colors cursor-zoom-in"
+                      {...reveal.props(i % 2)}
+                      className="group block aspect-[4/3] bg-graphite overflow-hidden border border-accent/10 hover:border-accent/40 transition-colors duration-[500ms] cursor-zoom-in"
                     >
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={url}
-                        alt={`${project.title} — image ${i + 1}`}
-                        loading="lazy"
-                        className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500"
-                      />
+                      <motion.div {...reveal.imageSettle()} className="w-full h-full">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={url}
+                          alt={`${project.title} — image ${i + 1}`}
+                          loading="lazy"
+                          className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-[500ms] ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:group-hover:scale-100"
+                        />
+                      </motion.div>
                     </motion.button>
                   ))}
                 </div>
@@ -209,17 +199,14 @@ export function WorkContent({ slug }: { slug: string }) {
 
           {/* ── More work ── */}
           {related.length > 0 && (
-            <section className="py-20 px-6 border-t border-accent/10">
+            <section className="py-26 md:py-42 px-6 border-t border-accent/10">
               <div className="max-w-5xl mx-auto">
                 <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.8 }}
+                  {...reveal.props()}
                   className="mb-10"
                 >
-                  <p className="text-xs tracking-[0.4em] uppercase text-accent mb-2 font-[family-name:var(--font-montserrat)]">More work</p>
-                  <h2 className="font-[family-name:var(--font-playfair)] text-3xl font-normal">Other projects.</h2>
+                  <p className="text-xs tracking-[0.2em] uppercase text-accent mb-2 font-[family-name:var(--font-montserrat)]">More work</p>
+                  <h2 className="font-[family-name:var(--font-playfair)] text-display font-normal">Other projects.</h2>
                 </motion.div>
 
                 <div className="grid md:grid-cols-3 gap-6">
@@ -227,19 +214,19 @@ export function WorkContent({ slug }: { slug: string }) {
                     <motion.a
                       key={p.id}
                       href={`/work/${p.slug || slugify(p.title)}`}
-                      initial={{ opacity: 0, y: 20 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      whileHover={{ y: -6, transition: { duration: 0.25, ease: "easeOut" } }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 0.6, delay: i * 0.1 }}
-                      className="group aspect-[4/3] bg-graphite border border-accent/10 relative overflow-hidden hover:border-accent/40 transition-colors"
+                      {...reveal.props(i)}
+                      whileHover={reveal.cardHover()}
+                      className="group aspect-[4/3] bg-graphite border border-accent/10 relative overflow-hidden hover:border-accent/40 transition-colors duration-[500ms]"
                     >
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={p.imageUrl} alt={p.title} className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-opacity" />
+                      <motion.div {...reveal.imageSettle()} className="absolute inset-0">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={p.imageUrl} alt={p.title} className="w-full h-full object-cover opacity-60 group-hover:opacity-80 group-hover:scale-[1.03] transition-[transform,opacity] duration-[500ms] ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:group-hover:scale-100" />
+                      </motion.div>
                       <div className="absolute inset-0 bg-gradient-to-t from-navy via-navy/40 to-transparent" />
-                      <div className="absolute bottom-0 left-0 right-0 p-5">
-                        <p className="text-[10px] tracking-widest text-accent mb-1 font-[family-name:var(--font-montserrat)]">{p.category}</p>
-                        <h3 className="font-[family-name:var(--font-playfair)] text-lg text-pearl leading-tight">{p.title}</h3>
+                      <div className="absolute bottom-0 left-0 right-0 p-6">
+                        <p className="text-xs tracking-[0.2em] uppercase text-accent mb-1.5 font-[family-name:var(--font-montserrat)]">{p.category}</p>
+                        <h3 className="font-[family-name:var(--font-playfair)] text-xl text-pearl leading-tight mb-1">{p.title}</h3>
+                        {p.description && <p className="text-taupe text-sm leading-relaxed line-clamp-1">{p.description}</p>}
                       </div>
                     </motion.a>
                   ))}
@@ -249,21 +236,18 @@ export function WorkContent({ slug }: { slug: string }) {
           )}
 
           {/* ── CTA ── */}
-          <section className="py-24 px-6 border-t border-accent/10">
+          <section className="py-26 md:py-42 px-6 border-t border-accent/10">
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8 }}
+              {...reveal.props()}
               className="max-w-2xl mx-auto text-center"
             >
-              <p className="text-xs tracking-[0.4em] uppercase text-accent mb-6 font-[family-name:var(--font-montserrat)]">Start a project</p>
-              <h2 className="font-[family-name:var(--font-playfair)] text-4xl md:text-5xl font-normal mb-8 leading-tight">
+              <p className="text-xs tracking-[0.2em] uppercase text-accent mb-6 font-[family-name:var(--font-montserrat)]">Start a project</p>
+              <h2 className="font-[family-name:var(--font-playfair)] text-display font-normal mb-10">
                 Want results<br /><span className="text-accent italic">like this?</span>
               </h2>
               <a
                 href="/#contact"
-                className="inline-flex text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] bg-accent text-navy px-8 py-4 rounded hover:bg-pearl transition-colors"
+                className="btn btn-primary"
               >
                 Let&apos;s talk
               </a>

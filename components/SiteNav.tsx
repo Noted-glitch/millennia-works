@@ -8,7 +8,7 @@ import { useSettings } from "@/lib/settings-context";
 export type SiteNavActiveLink = "home" | "services" | "about" | "work" | "blog" | "contact" | null;
 
 const LINKS: { key: Exclude<SiteNavActiveLink, null>; label: string; href: string }[] = [
-  { key: "services", label: "Services", href: "/#services" },
+  { key: "services", label: "Services", href: "/services" },
   { key: "about", label: "About", href: "/#about" },
   { key: "work", label: "Work", href: "/#work" },
   { key: "blog", label: "Blog", href: "/blog" },
@@ -21,6 +21,15 @@ export function SiteNav({ activeLink = null }: { activeLink?: SiteNavActiveLink 
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const hasBar = bar.enabled && bar.text;
+
+  // Transparent over the hero; solid navy + hairline border once scrolled (§7.3).
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   // Prevent body scroll while mobile menu is open.
   useEffect(() => {
@@ -50,8 +59,8 @@ export function SiteNav({ activeLink = null }: { activeLink?: SiteNavActiveLink 
       )}
 
       {/* ── Nav bar ── */}
-      <nav className={`fixed left-0 right-0 z-50 backdrop-blur-md bg-navy/70 border-b border-gold/10 ${hasBar ? "top-[42px]" : "top-0"}`}>
-        <div className="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
+      <nav className={`fixed left-0 right-0 z-50 transition-[background-color,border-color,backdrop-filter] duration-500 ${scrolled ? "bg-navy/95 backdrop-blur-md border-b border-gold/10" : "bg-transparent border-b border-transparent"} ${hasBar ? "top-[42px]" : "top-0"}`}>
+        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           {/* Logo */}
           <a href="/" onClick={() => setMobileOpen(false)} className="inline-flex items-center" aria-label="Millennia Works home">
             <Image
@@ -65,15 +74,15 @@ export function SiteNav({ activeLink = null }: { activeLink?: SiteNavActiveLink 
           </a>
 
           {/* Desktop links */}
-          <div className="hidden md:flex items-center gap-8 text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] text-pearl/80">
+          <div className="hidden md:flex items-center gap-8 text-[13px] tracking-[0.15em] uppercase font-[family-name:var(--font-montserrat)] text-pearl/80">
             {LINKS.map((l) => (
-              <a key={l.key} href={l.href} className={`transition-colors ${activeLink === l.key ? "text-gold" : "hover:text-gold"}`}>{l.label}</a>
+              <a key={l.key} href={l.href} className={`link-underline [--underline-color:var(--color-gold)] transition-colors ${activeLink === l.key ? "text-gold" : "hover:text-gold"}`}>{l.label}</a>
             ))}
           </div>
 
           {/* Right side: CTA (desktop) + hamburger (mobile) */}
           <div className="flex items-center gap-4">
-            <a href="/#contact" className="hidden md:inline-flex text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] bg-gold text-navy px-5 py-2.5 rounded hover:bg-gold/90 transition-colors">
+            <a href="/#contact" className="hidden md:inline-flex items-center text-[13px] tracking-[0.15em] uppercase font-[family-name:var(--font-montserrat)] bg-gold text-navy px-6 py-2.5 rounded-[3px] hover:bg-gold/90 transition-colors duration-[400ms]">
               Start a project
             </a>
 

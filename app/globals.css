@@ -21,6 +21,18 @@
   --color-accent-tint: var(--color-gold);
 }
 
+@theme {
+  /*
+   * Display type scale (design system §3). Exposes `text-display-hero` and
+   * `text-display`. Line heights are deliberately tight (0.95–1.05) — the
+   * contrast against 1.7 body leading is part of the spec.
+   */
+  --text-display-hero: clamp(4.5rem, 10vw, 10rem); /* 72 → 160px */
+  --text-display-hero--line-height: 0.98;
+  --text-display: clamp(2.5rem, 5vw, 5.5rem); /* 40 → 88px */
+  --text-display--line-height: 1.02;
+}
+
 @theme inline {
   --color-pearl: var(--color-pearl);
   --color-gold: var(--color-gold);
@@ -87,4 +99,151 @@ body {
   );
   background-size: 200% 100%;
   animation: shimmer 1.6s ease-in-out infinite;
+}
+
+/*
+ * Underline-draw for text links (design system §5.5). A 1px rule sweeps in
+ * left→right on hover, using the constitution's expo-out easing. Colors from
+ * `currentColor`, so it inherits gold/accent wherever it's applied.
+ */
+.link-underline {
+  position: relative;
+}
+.link-underline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 100%;
+  height: 1px;
+  /* Defaults to the link's own color; set --underline-color to force a hue
+     (e.g. gold under pearl nav links). */
+  background: var(--underline-color, currentColor);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.link-underline:hover::after,
+.link-underline:focus-visible::after {
+  transform: scaleX(1);
+}
+
+/* prefers-reduced-motion: collapse the underline draw to an instant state. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .link-underline::after {
+    transition: none;
+  }
+}
+
+/*
+ * Buttons (design system §7.1). Rectangular (3px radius), generous padding,
+ * 13px uppercase letterspaced labels. Primary = gold fill / navy text;
+ * secondary = 1px gold outline that fills gold on hover over 0.4s.
+ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 18px 36px;
+  border-radius: 3px;
+  border: 1px solid transparent;
+  font-family: var(--font-montserrat), system-ui, sans-serif;
+  font-size: 13px;
+  line-height: 1;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    color 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.btn-primary {
+  background: var(--color-gold);
+  border-color: var(--color-gold);
+  color: var(--color-navy);
+}
+.btn-primary:hover {
+  /* subtle lift toward gold-400 */
+  background: color-mix(in srgb, var(--color-gold) 85%, white);
+  border-color: color-mix(in srgb, var(--color-gold) 85%, white);
+}
+.btn-secondary {
+  background: transparent;
+  border-color: var(--color-gold);
+  color: var(--color-gold);
+}
+.btn-secondary:hover {
+  background: var(--color-gold);
+  color: var(--color-navy);
+}
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/*
+ * Form field focus (design system §7.5): a subtle gold glow, 0.3s.
+ */
+.field {
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.field:focus {
+  outline: none;
+  border-color: var(--color-gold);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-gold) 18%, transparent);
+}
+
+/*
+ * Custom cursor (design system §5 signature). The dot is positioned by JS
+ * (components/CustomCursor); these rules suppress the native cursor and style
+ * the dot. Active only while <html> carries .cursor-custom (desktop pointer,
+ * non-reduced-motion — set by the component).
+ */
+.cursor-custom,
+.cursor-custom * {
+  cursor: none !important;
+}
+/* Keep a usable caret in text fields. */
+.cursor-custom input,
+.cursor-custom textarea,
+.cursor-custom [contenteditable="true"] {
+  cursor: text !important;
+}
+
+.cursor-dot {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  opacity: 0;
+  pointer-events: none;
+  will-change: transform;
+  transition: opacity 0.3s ease;
+}
+.cursor-dot-inner {
+  display: block;
+  width: 40px;
+  height: 40px;
+  margin: -20px 0 0 -20px;
+  border-radius: 9999px;
+  background: var(--color-gold);
+  border: 1px solid transparent;
+  transform: scale(0.2); /* 8px dot at rest */
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 0.28s ease, border-color 0.28s ease;
+}
+.cursor-dot.is-active .cursor-dot-inner {
+  transform: scale(1); /* 40px ring over interactive elements */
+  background: color-mix(in srgb, var(--color-gold) 16%, transparent);
+  border-color: var(--color-gold);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cursor-dot {
+    display: none;
+  }
 }
