@@ -5,6 +5,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { getAllServices } from "@/lib/services";
 import { useSettings } from "@/lib/settings-context";
+import { useReveal } from "@/lib/motion";
 import { SiteNav } from "@/components/SiteNav";
 import { SiteFooter } from "@/components/SiteFooter";
 import type { Service } from "@/lib/types";
@@ -13,6 +14,7 @@ export default function ServicesIndex() {
   const { settings } = useSettings();
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
+  const reveal = useReveal();
 
   useEffect(() => {
     async function load() {
@@ -35,26 +37,24 @@ export default function ServicesIndex() {
       <SiteNav activeLink="services" />
 
       {/* Header */}
-      <section className="pt-32 pb-16 px-6 border-b border-gold/10">
+      <section className="pt-44 pb-26 md:pt-64 md:pb-42 px-6 border-b border-gold/10">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
+          {...reveal.onMount()}
           className="max-w-4xl mx-auto text-center"
         >
-          <p className="text-xs tracking-[0.4em] uppercase text-gold mb-6 font-[family-name:var(--font-montserrat)]">What we do</p>
-          <h1 className="font-[family-name:var(--font-playfair)] text-5xl md:text-6xl font-normal leading-tight mb-6">
+          <p className="text-xs tracking-[0.2em] uppercase text-gold mb-6 font-[family-name:var(--font-montserrat)]">What we do</p>
+          <h1 className="font-[family-name:var(--font-playfair)] text-display font-normal mb-10">
             Every discipline,<br />
             <span className="text-gold italic">one studio.</span>
           </h1>
-          <p className="text-champagne/80 text-base md:text-lg max-w-2xl mx-auto">
+          <p className="text-champagne/80 text-[17px] md:text-[19px] leading-[1.7] max-w-[65ch] mx-auto">
             From brand identity to apps, books, and 3D — the full range of what Millennia Works delivers, end to end.
           </p>
         </motion.div>
       </section>
 
       {/* Grid */}
-      <section className="py-16 md:py-20 px-6">
+      <section className="py-26 md:py-42 px-6">
         <div className="max-w-7xl mx-auto">
           {loading ? (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -80,12 +80,9 @@ export default function ServicesIndex() {
                 <motion.a
                   key={service.id}
                   href={`/${service.slug}`}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  whileHover={{ y: -6, transition: { duration: 0.25, ease: "easeOut" } }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.6, delay: (i % 6) * 0.08 }}
-                  className="border border-gold/10 bg-graphite/20 p-8 md:p-10 hover:border-gold/40 transition-colors group block"
+                  {...reveal.props(i % 6)}
+                  whileHover={reveal.cardHover()}
+                  className="border border-gold/10 bg-graphite/20 p-8 md:p-10 hover:border-gold/40 transition-colors duration-[500ms] group block"
                 >
                   <p className="text-gold text-xs tracking-widest mb-6 font-[family-name:var(--font-montserrat)]">{service.tag}</p>
                   <h2 className="font-[family-name:var(--font-playfair)] text-2xl mb-4 group-hover:text-gold transition-colors">{service.title}</h2>
@@ -101,7 +98,7 @@ export default function ServicesIndex() {
               <p className="text-champagne/70 text-base mb-6">Not sure which one fits? Tell us what you&apos;re building.</p>
               <Link
                 href="/#contact"
-                className="inline-flex text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] bg-gold text-navy px-8 py-3.5 rounded hover:bg-gold/90 transition-colors"
+                className="btn btn-primary"
               >
                 Start a project →
               </Link>

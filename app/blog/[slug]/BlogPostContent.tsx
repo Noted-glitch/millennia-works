@@ -7,6 +7,7 @@ import remarkGfm from "remark-gfm";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { getPostBySlug, getPublishedPosts } from "@/lib/blog";
+import { useReveal } from "@/lib/motion";
 import { SiteNav } from "@/components/SiteNav";
 import { SiteFooter } from "@/components/SiteFooter";
 import type { BlogPost } from "@/lib/types";
@@ -27,6 +28,7 @@ export function BlogPostContent({ slug }: { slug: string }) {
   const [loading, setLoading]     = useState(true);
   const [notFound, setNotFound]   = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
+  const reveal = useReveal();
 
   useEffect(() => {
     let cancelled = false;
@@ -83,7 +85,7 @@ export function BlogPostContent({ slug }: { slug: string }) {
       )}
 
       {loading ? (
-        <div className="pt-32 pb-20 px-6">
+        <div className="pt-44 md:pt-64 pb-26 md:pb-42 px-6">
           <div className="max-w-3xl mx-auto text-center mb-14 space-y-5">
             <div className="skeleton h-3 w-20 mx-auto rounded" />
             <div className="skeleton h-12 w-3/4 mx-auto rounded" />
@@ -101,10 +103,10 @@ export function BlogPostContent({ slug }: { slug: string }) {
       ) : notFound || !post ? (
         <section className="min-h-screen flex items-center justify-center px-6 pt-20">
           <div className="text-center max-w-md">
-            <p className="text-xs tracking-[0.4em] uppercase text-accent mb-6 font-[family-name:var(--font-montserrat)]">Not found</p>
-            <h1 className="font-[family-name:var(--font-playfair)] text-4xl md:text-5xl font-normal mb-6">Post not found.</h1>
+            <p className="text-xs tracking-[0.2em] uppercase text-accent mb-6 font-[family-name:var(--font-montserrat)]">Not found</p>
+            <h1 className="font-[family-name:var(--font-playfair)] text-display font-normal mb-6">Post not found.</h1>
             <p className="text-champagne/70 mb-8">This post may have been moved or unpublished.</p>
-            <a href="/blog" className="inline-block text-accent text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] border-b border-accent pb-1 hover:text-pearl hover:border-pearl transition-colors">← Back to all posts</a>
+            <a href="/blog" className="link-underline inline-block text-accent text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] hover:text-pearl transition-colors">← Back to all posts</a>
           </div>
         </section>
       ) : (
@@ -115,15 +117,13 @@ export function BlogPostContent({ slug }: { slug: string }) {
             </div>
           )}
 
-          <article className={`px-6 ${post.status === "draft" ? "pt-12" : "pt-32"} pb-20`}>
+          <article className={`px-6 ${post.status === "draft" ? "pt-12" : "pt-44 md:pt-64"} pb-26 md:pb-42`}>
             <motion.header
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-              className="max-w-3xl mx-auto text-center mb-12"
+              {...reveal.onMount()}
+              className="max-w-4xl mx-auto text-center mb-16"
             >
-              <p className="text-xs tracking-[0.4em] uppercase text-accent mb-6 font-[family-name:var(--font-montserrat)]">{post.category}</p>
-              <h1 className="font-[family-name:var(--font-playfair)] text-4xl md:text-6xl font-normal leading-tight mb-8">{post.title}</h1>
+              <p className="text-xs tracking-[0.2em] uppercase text-accent mb-6 font-[family-name:var(--font-montserrat)]">{post.category}</p>
+              <h1 className="font-[family-name:var(--font-playfair)] text-display font-normal mb-10">{post.title}</h1>
               <div className="flex items-center justify-center gap-3 text-taupe text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] flex-wrap">
                 <span>{post.author}</span>
                 {post.publishedAt && <><span>·</span><span>{formatDate(post.publishedAt)}</span></>}
@@ -133,26 +133,19 @@ export function BlogPostContent({ slug }: { slug: string }) {
             </motion.header>
 
             {post.coverImageUrl && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 1, delay: 0.2 }}
-                className="max-w-5xl mx-auto mb-16"
-              >
-                <div className="aspect-[16/9] bg-graphite overflow-hidden border border-accent/10">
+              <div className="max-w-5xl mx-auto mb-16">
+                <motion.div {...reveal.mountImage()} className="aspect-[16/9] bg-graphite overflow-hidden border border-accent/10">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={post.coverImageUrl} alt={post.title} className="w-full h-full object-cover" />
-                </div>
-              </motion.div>
+                </motion.div>
+              </div>
             )}
 
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.3 }}
-              className="max-w-2xl mx-auto"
+              {...reveal.onMount(3)}
+              className="max-w-[65ch] mx-auto"
             >
-              <div className="prose-content text-champagne text-base md:text-lg leading-relaxed">
+              <div className="prose-content text-champagne text-[17px] md:text-[19px] leading-[1.7]">
                 <ReactMarkdown
                   remarkPlugins={[remarkGfm]}
                   components={{
@@ -176,41 +169,37 @@ export function BlogPostContent({ slug }: { slug: string }) {
               </div>
 
               <div className="mt-16 pt-8 border-t border-accent/10 text-center">
-                <a href="/blog" className="inline-block text-accent text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] border-b border-accent pb-1 hover:text-pearl hover:border-pearl transition-colors">← Back to all posts</a>
+                <a href="/blog" className="link-underline inline-block text-accent text-xs tracking-widest uppercase font-[family-name:var(--font-montserrat)] hover:text-pearl transition-colors">← Back to all posts</a>
               </div>
             </motion.div>
           </article>
 
           {/* ── Related posts ── */}
           {related.length > 0 && (
-            <section className="py-20 px-6 border-t border-accent/10">
+            <section className="py-26 md:py-42 px-6 border-t border-accent/10">
               <div className="max-w-5xl mx-auto">
                 <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.8 }}
+                  {...reveal.props()}
                   className="mb-10"
                 >
-                  <p className="text-xs tracking-[0.4em] uppercase text-accent mb-2 font-[family-name:var(--font-montserrat)]">Continue reading</p>
-                  <h2 className="font-[family-name:var(--font-playfair)] text-3xl font-normal">More from the <span className="text-accent italic">studio.</span></h2>
+                  <p className="text-xs tracking-[0.2em] uppercase text-accent mb-2 font-[family-name:var(--font-montserrat)]">Continue reading</p>
+                  <h2 className="font-[family-name:var(--font-playfair)] text-display font-normal">More from the <span className="text-accent italic">studio.</span></h2>
                 </motion.div>
-                <div className="grid md:grid-cols-3 gap-8">
+                <div className="grid md:grid-cols-3 gap-10">
                   {related.map((p, i) => (
                     <motion.a
                       key={p.id}
                       href={`/blog/${p.slug}`}
-                      initial={{ opacity: 0, y: 20 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      whileHover={{ y: -6, transition: { duration: 0.25, ease: "easeOut" } }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 0.6, delay: i * 0.1 }}
-                      className="group flex flex-col border border-accent/10 hover:border-accent/40 transition-colors"
+                      {...reveal.props(i)}
+                      whileHover={reveal.cardHover()}
+                      className="group flex flex-col border border-accent/10 hover:border-accent/40 transition-colors duration-[500ms]"
                     >
                       {p.coverImageUrl ? (
                         <div className="aspect-[16/10] bg-graphite overflow-hidden">
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img src={p.coverImageUrl} alt={p.title} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" />
+                          <motion.div {...reveal.imageSettle()} className="w-full h-full">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img src={p.coverImageUrl} alt={p.title} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-[1.03] transition-[transform,opacity] duration-[500ms] ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:group-hover:scale-100" />
+                          </motion.div>
                         </div>
                       ) : (
                         <div className="aspect-[16/10] bg-graphite" />
